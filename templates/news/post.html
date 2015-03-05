@@ -1,0 +1,66 @@
+{% extends "basehtml.html" %}
+
+{% load staticfiles %}
+
+{% block 'title' %} {{ post.title }} {% endblock %}
+
+{% block 'content' %}
+    <div id="posttable" style="background-color: #{{ post.colorcode }};">
+        <div id="postheader">
+            <span id="posttitle">{{ post.title }}</span>
+            <p>Posted on <b>{{ post.date }}</b></p> <!-- by -->
+        </div> 
+        <div id="postimg">
+            <img src="/{{ post.pic }}" alt="{{ post.title }}" style="width: 105%; position: relative; left: -10px; height: 250px;"/>
+        </div>
+        <br><br>
+        <div id="postdata" style="width: 400px; word-wrap: break-word;">{{ post.post|safe }}</div>
+        <hr>
+        {{ post.commentinfo }}
+        
+        {% if user.is_authenticated %}
+            {% if user_commented == -1 or user_commented == 1 or user.is_staff %}
+                {% if user_commented == 1 %}
+                    <p id="errorbox">Sorry, your last comment was not approved by the moderators!</p>
+                {% endif %}
+                <p>Commenting as {{ user.username }} </p>
+                <form method="post" action="/news/comment/{{ post.id }}/">
+                    {% csrf_token %}
+                    <textarea rows="4" cols="50" name="comment"></textarea>
+                    <br>
+                    {% if user.is_staff %}
+                        Image: <select name="image">
+                        {% for key, value in icons.items %}
+                            <option value={{ value }}>{{ key }}</option>
+                        {% endfor %}
+                        </select>
+                    {% endif %}
+                    <input type="submit"/>
+                </form>        
+            {% elif user_commented == 2 %}
+                <p>You have already commented.</p>
+            {% else %}
+                <p>Your comment is under review.</p>
+            {% endif %}
+        {% else %}
+            <p align="centered">Please <a href="/login">login</a> to comment.</p>
+        {% endif %}
+        <br>
+        {% for comment in post.comments %}
+            <div id="commentbox{{ comment.style }}" style="padding: 2px;">
+                <span style="font-size: 16px;"><i>{{ comment.authorname }}</i> <b>say{% if comment.tp %}s{% endif %}:</b></span>
+                <p>{{ comment.comment }}</p>
+                {% if comment.img %}
+                    <img width="10%" height="100%" src={{ comment.img }}>   
+                {% endif %}
+                <p style="font-size: 12px;"><i>{{ comment.date }}</i></p>
+            </div>
+            {% if not comment.last %}
+                <br>
+            {% endif %}
+        {% endfor %}
+        {% if user.is_staff %}
+        <br><br><a href="/news/review" style="font-size: 20px;">Comment review</a>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "basehtml.html" %}
+
+{% block 'title' %}Post Maker{% endblock %}
+
+{% block 'content' %}
+    <form action="/news/make/" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table id="registerframe">
+            {% for err in errors %}
+                <tr><td>&nbsp;</td></tr>
+                <tr><td align="center">
+                    <span id="errorbox">{{ err }}</span>
+                </td></tr>
+            {% endfor %}
+            <tr><td>{{ form.media }}</td></tr>
+            <tr><td>{{ form }}</td></tr>
+            <tr><td><input type="submit" value="Submit"></input></td></tr>
+        </table>
+    </form>
+{% endblock %}

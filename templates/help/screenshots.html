@@ -1,0 +1,65 @@
+﻿{% extends "basehtml.html" %}
+
+{% load staticfiles %}
+
+{% block 'title' %}Screenshots and Videos{% endblock %}
+
+{% block 'content' %}
+<div id="ctheader" align="center">
+    <br>
+    <img src={% static "img/screenshots.gif" %} alt="" border="0" height="37" width="222">
+    <br>
+    <br>
+</div>
+<div id="ctbody">
+    <table id="nav" border="0">
+        <tr>
+            <td align="center" valign="middle">
+                <a href="#" onclick="javascript:previousImage();">
+                    <img src={% static "img/arrowLeft.gif" %} alt="" border="0" height="70">
+                </a>
+            </td>
+            <td align="center" valign="middle">
+                <img id="screen" border="0" height="253" style="max-width:100%;min-width:100%;">
+            </td>
+            <td align="center" valign="middle">
+                <a href="#" onclick="javascript:nextImage();">
+                    <img src={% static "img/arrowRight.gif" %} alt="" border="0" height="70">
+                </a>
+            </td>
+        </tr>
+    </table>
+    <script src={% static "javascript/screenshots.js" %}></script>
+</div>
+<div id="ctvideo">
+    <br><img src="/static/img/line.gif" border="0" height="1"><br><br>
+    <table id="videotable" border="0" align="center">
+        <tr>
+            <td align="center" valign="middle">
+                <img src={% static "img/video.gif" %} alt="" border="0" height="40" width="104">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" align="center">
+                <br>
+                <font face="arial,helvetica" size="2">
+                    <a href={% static "shockwave/movie.swf" %}>How Cogs Were Made</a>
+                </font>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="ctgames">
+    <br><img src="/static/img/line.gif" border="0" height="1"><br>
+    <table id="gamestable" border="0" align="center">
+        <tr>
+            <td colspan="3" align="center"><br>
+                <img src={% static "img/game.gif" %} alt="" border="0" height="40" width="104">
+                <br>
+            </td>
+        </tr>
+        {{ gamelist|safe }}
+    </table>
+    <br>
+</div>
+{% endblock %}

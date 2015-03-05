@@ -1,0 +1,38 @@
+{% extends "basehtml.html" %}
+
+{% load staticfiles %}
+
+{% block 'title' %}Login{% endblock %}
+
+{% block 'content' %}
+<form method="post" action="/login/">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}"/>
+    <div>
+        <table id="registerframe">
+                <tr><td>&nbsp;</td></tr>
+                {% if form.errors %}
+                    <tr><td>
+                        <div id="errorbox">
+                            <p>Your username and password didn't match. Please try again.</p>
+                        </div>
+                    </td></tr>
+                {% endif %}
+                <tr><td>{{ form.username.label_tag }}</td></tr>
+                </tr><td>{{ form.username }}</td></tr>
+            
+                <tr><td>{{ form.password.label_tag }}</td>
+                <tr><td>{{ form.password }}</td></tr>
+            
+                <tr><td>&nbsp;</td></tr>
+                <tr><td><input name="submit" type="image" src={% static "img/loginBtn.png" %} height="30" width="120"/></td></tr>
+                <tr><td>&nbsp;</td></tr>
+                <tr><td>
+                    <a href="/register"><img src={% static "img/registerBtn.png" %} height="30" width="120"/></a>
+                    <a href="/forgotpass"><img src={% static "img/forgotPassBtn.png" %} height="30" width="120"/></a>
+                    <a href="/register/resend"><img src={% static "img/remailBtn.png" %} height="30" width="120"/></a>
+                </td></tr>
+        </table>
+    </div>
+</form>
+{% endblock %}

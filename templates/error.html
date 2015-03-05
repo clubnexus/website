@@ -1,0 +1,25 @@
+{% extends "basehtml.html" %}
+
+{% load staticfiles %}
+
+{% block 'title' %}Page Unavailable{% endblock %}
+
+{% block 'content' %}
+<table border="0" cellpadding="0" cellspacing="0" width="434">
+    <tr>
+        <td colspan="2" align="center">
+            <br>
+            <img src={% static "img/blog-down.jpg" %} border="0" height="300" width="424">
+            <br>
+            <br>
+        </td>
+    </tr>
+    <tr>
+        <td align="center" valign="top">
+            <font size="2" face="arial,helvetica">
+                <p align="center">We cannot find the page you are looking for. We think that those pesky Cogs might have stolen it!</p>
+            </font>
+        </td>
+    </tr>
+</table>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "basehtml.html" %}
+
+{% block 'title' %}Resend email{% endblock %}
+
+{% block 'content' %}
+    <form action="/register/resend/" method="POST">
+        {% csrf_token %}
+        <table id="registerframe">
+            <tr><td><span style="font-size: 30px;">Resend confirmation email</span></td></tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr><td>
+                <p>Enter your email below:</p>
+            </td></tr>
+            <tr><td><input type="text" name="email"></input></td></tr>
+            {% if error %}
+                 <tr><td>
+                    <p id="errorbox">Error: {{ error }}</p>
+                </td></tr>
+            {% endif %}
+            <tr><td>&nbsp;</td></tr>
+            <tr><td><div id="recaptcha" align="center"></td></tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr><td><input type="submit" value="Submit"></input></td></tr>
+        </table>
+    </form>
+{% endblock %}

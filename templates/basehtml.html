@@ -1,0 +1,142 @@
+{% load staticfiles %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html xmlns:ie="">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <link type="text/css" rel="stylesheet" href={% static "css/banner-styles.css" %}>
+        <link type="text/css" rel="stylesheet" href={% static "css/background.css" %}/>
+        <link type="text/css" rel="stylesheet" href={% static "css/style.css" %}/>
+        <link rel="shortcut icon" href={% static "img/icon.png" %}>
+
+        <meta http-equiv="imagetoolbar" content="no">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="expires" content="0">
+        
+        <title>Toontown Next | {% block 'title' %}{% endblock %}</title>
+        <script src={% static "javascript/hitboxcode.js" %} type="text/javascript"></script>
+        <script language="JavaScript">
+            hitbox = new HB_CreateObject("/toontown/US/PROSPECT/HOME");
+            hitbox.HB_PlaceAccount("DM53030620EW42EN3","DM510612FMNS38EN3","DM51030813MR38EN3","DM5103083LCA38EN3");
+            hitbox.HB_PlaceName("_about");
+            hitbox.HB_render();
+        </script>
+        <script defer="defer" src={% static "javascript/hbx.js" %} type="text/javascript"></script>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+        <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+        <script type="text/javascript">
+            var onloadCallback = function() {
+                grecaptcha.render('recaptcha', {
+                    'sitekey' : '6LfaqgETAAAAAIY-qyhpRCsuely28LcXjGbbWFIx'
+                });
+            };
+        </script>
+
+        <meta name="keywords" http-equiv="keywords" content="disney, fun, games, kids, entertainment, children, multiplayer, multiplayer game, multi player, cooperative game, massive, mmorpg, morpg, action game, strategy game, online, battle, mini games, mini-games, adventure, cooperative, toon, toontown, gag, cog, action, fun games, online games, kids games, games for kids ">
+        <meta name="description" http-equiv="description" content=" Toontown Next based off of the closed massively multiplayer Internet game, Toontown Online, that let you live the life of a Toon!  Adventure on hundreds of tasks to earn Gags and Laff points, participate in special events and contests with your friends, and personalize your Toon with cool clothes and decorate your Toon's own house.">
+        <meta name="robots" http-equiv="robots" content="index,nofollow">
+        <meta name="author" http-equiv="author" content="Toontown">
+    </head>   
+    <body>
+        <table align="center" bgcolor="#FFFFFF" border="0" cellpadding="0" cellspacing="0" width="424">
+            <tbody>
+                <tr>
+                    <td colspan="5">
+                    <table align="center" border="0" cellpadding="0" cellspacing="0">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <a href="">
+                                        <img src={% static "img/hdrLeft.gif" %} border="0" height="109" width="133">
+                                    </a>
+                                    <br>
+                                </td>
+                                <td>
+                                    <a href="">
+                                        <img src={% static "img/hdrCenterLogo.gif" %} alt="" border="0" height="109" width="516">
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="/play">
+                                        <img name="headerPlay/right" src={% static "img/hdrPlay_reg.gif" %} alt="" border="0" height="109" width="121">
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3"><img src={% static "img/hdrSepStrip.gif" %} alt="" border="0" height="23" width="770"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+        </td>
+      </tr>
+                <tr>
+                    <td align="center" valign="top" width="154" cellspacing="100">
+                        <a href="/play">
+                            <img src={% static "img/PlayBtn.png" %} height="45" width="154">
+                        </a>
+                        <a href="/">
+                            <img src={% static "img/FrontPageBtn.png" %} height="35" width="154">
+                        </a>
+                        <a href="/help/about">
+                            <img src={% static "img/WhatIsToontownBtn.png" %} height="35" width="154">
+                        </a>
+                        <a href="/help/screenshots">
+                            <img src={% static "img/ScreenshotsVideosBtn.png" %} height="35" width="154">
+                        </a>
+                        <a href="/news">
+                            <img src={% static "img/WhatsNewBtn.png" %} height="35" width="154">
+                        </a>
+                        <a href="/help/faq">
+                            <img src={% static "img/HelpBtn.png" %} height="35" width="154">
+                        </a>
+                        <img src={% static "img/imgPostcard.gif" %} height="154" width="154">
+                    </td>
+
+                    <td rowspan="2" background={% static "img/lineLeft.gif" %} width="14">&nbsp;</td>
+                    <td rowspan="1" align="left" valign="top" width="434">
+                        <table border="0" cellpadding="0" cellspacing="0" width="434">
+                            <tbody><tr><td>
+                            {% block 'content' %}
+                            {% endblock %}
+                            </td></tr></tbody>
+                        </table>
+                    </td>
+                    <td rowspan="2" background={% static "img/lineRight.gif" %} width="14">&nbsp;</td>
+                    <td rowspan="1" align="center" valign="top" width="154">
+                        <img src={% static "img/tt_tab_toonsworldunite.gif" %} height="15" width="154">
+                        <br>
+                        
+                        <p style="font-family: cursive; font-size: 90%;"> Welcome,
+{% if user.is_authenticated %}  
+    {{ user.username }}!</p>
+    <a href="/account"><img src={% static "img/accBtn.png" %} height="35" width="154"></a>
+    <a href="/logout"><img src={% static "img/logoutBtn.png" %} height="35" width="154"></a>
+                        <!--<img src={% static "img/castyourvote.gif" %} height="65" width="154">
+                        <p>Coming soon!</p>-->
+                        <br>
+                        <br>
+{% else %}
+    guest!</p>
+    <a href="/login"><img src={% static "img/loginBtnS.png" %} height="35" width="154"></a>
+    <a href="/register"><img src={% static "img/registerBtnS.png" %} height="35" width="154"></a>
+{% endif %}
+                        <img id="top2d" height="205" width="154">
+                        <script src={% static "javascript/2dg3n.js" %}></script>
+                        
+                        
+                        <a href='javascript:salute=window.open("/help/salute",%20"salute","width=540,height=360,resizable=0,scrollbars=1");salute.focus();'>
+                            <img src={% static "img/psst_promo.gif" %} border="0" height="158" width="128">
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <img src={% static "img/lines.jpg" %} alt="" border="0" height="12" width="770">
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </body>
+</html>

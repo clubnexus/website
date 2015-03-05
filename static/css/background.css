@@ -1,0 +1,9 @@
+body {
+    background-image: url(/static/css/background.png);
+    -moz-background-size: cover;
+    -webkit-background-size: cover;
+    background-size: cover;
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
