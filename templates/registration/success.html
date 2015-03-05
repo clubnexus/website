@@ -1,0 +1,13 @@
+{% extends "basehtml.html" %}
+
+{% block 'title' %}Registered{% endblock %}
+
+{% block 'content' %}
+    <br>
+    <div align="center">
+        <p>{{ context }} Please confirm your email before you can login.</p>
+        <p>If you can't find our email, check your spam folder. If it's still not there, <a href="/register/resend">resend confirmation email.</a></p>
+        {{ extra|safe }}
+    </div>
+{% endblock %}
+

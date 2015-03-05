@@ -1,0 +1,44 @@
+{% extends "basehtml.html" %}
+
+{% load staticfiles %}
+
+{% block 'title' %}Invasions{% endblock %}
+
+{% block 'content' %}
+<br>
+
+{% if error %}
+    <div id="errorbox" width="424" align="center">{{ error }}</div>
+{% else %}
+    {% for district in districts %}
+    <table border="0" width="424" align="center">
+        <tr><td align="center">
+            <span style="align: center; font-size: 40px;">{{ district.name }}</span>
+        </td></tr>
+    </table>
+    <table border="0" width="424" align="center">
+        <tr><td align="center">
+            <span style="align: center; font-size: 24px;">Invading cog: <b>{{ district.invasion.cogName }}</b></span>
+        </td></tr>
+        <tr><td align="center">
+                <img src="{% static 'img/cogs/' %}{{ district.invasion.pic }}.png" alt="{{ district.invasion.cogName }}"
+                     style="width: 30%; height: 10%">
+            </td></td>
+        </tr>
+        <tr><td align="center">Duration: 
+            {% if district.invasion.isMega %}
+                MEGA!</td></tr><tr><td align="center">Elapsed time: 
+            {% else %}
+                {{ district.invasion.duration }}</td></tr>
+                <td align="center">Remaining time: 
+            {% endif %}
+            
+            {{ district.invasion.remaining }}</td></tr>
+            
+        <tr><td align="center">Number of cogs issued: {{ district.invasion.numCogs }}</td></tr>
+        </tr>
+    </table>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}

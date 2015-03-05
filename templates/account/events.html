@@ -1,0 +1,26 @@
+{% extends "basehtml.html" %}
+
+{% block 'title' %}Events{% endblock %}
+
+{% block 'content' %}
+    <p style="padding-bottom: 1px;"></p>
+    <center><h2>EVENTS</h2></center>
+    <div>
+        <table id="posttable" border=1 style="text-align: center; border: 5px; border-collapse: collapse;">
+            <tr>
+                <td><span style="font-size: 14px;">Event type</span></td>
+                <td><span style="font-size: 14px;">Date</span></td>
+                <td><span style="font-size: 14px;">IP</span></td>
+                <td><span style="font-size: 14px;">Extra info</span></td>
+            </tr>
+            {% for event in events %}
+            <tr>
+                <td><span style="font-size: 14px;">{{ event.event_type }}</span></td>
+                <td><span style="font-size: 14px;">{{ event.event_date }}</span></td>
+                <td><span style="font-size: 14px;">{{ event.event_ip_pub }}</span></td>
+                <td><span style="font-size: 14px;">{{ event.event_desc_pub|safe }}</span></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

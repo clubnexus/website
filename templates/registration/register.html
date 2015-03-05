@@ -1,0 +1,61 @@
+{% extends "basehtml.html" %}
+
+{% load staticfiles %}
+
+{% block 'title' %}Register{% endblock %}
+
+{% block 'content' %}
+<form id="user_form" method="post" action="/register/">
+    {% csrf_token %}
+    <table id="registerframe">
+        <tr><td>&nbsp;</td></tr>
+        <tr><td>Username</td></tr>
+        <tr><td><input name="username" type="text" value="{{ D_username }}"/></td></tr>
+            
+        {% for err in error_username %}
+            <tr><td>
+                <span id="errorbox">{{ err }}</span>
+            </td></tr>
+        {% endfor %}
+            
+        <tr><td>Email</td></tr>
+        <tr><td><input name="email" type="email" value="{{ D_email }}"/></td></tr>
+            
+        {% for err in error_email %}
+            <tr><td>
+                <span id="errorbox">{{ err }}</span>
+            </td></tr>
+        {% endfor %}
+            
+        <tr><td>Password</td></tr>
+        <tr><td><input name="password" type="password"/></td></tr>
+        
+        <tr><td>Confirm password</td></tr>
+        <tr><td><input name="password2" type="password"/></td></tr>
+            
+        {% for err in error_password %}
+        <tr><td>
+             <span id="errorbox">{{ err }}</span>
+        </td></tr>
+        {% endfor %}
+        
+        <tr><td>&nbsp;</td></tr>
+        <tr><td><div id="recaptcha"></div></tr></td>
+        {% for err in error_captcha %}
+        <tr><td>
+             <span id="errorbox">{{ err }}</span>
+        </td></tr>
+        {% endfor %}
+        
+        <tr><td>&nbsp;</td></tr>
+        <tr><td><input name="submit" type="image" src={% static "img/registerBtn.png" %} style="width: 110px;"></td></tr>
+        <tr><td>&nbsp;</td></tr>
+        <tr><td>
+            Already registered?<br>
+            <a href="/login">
+                <img src={% static "img/loginBtn.png" %} style="width: 110px;"/>
+            </a>
+        </td></tr>      
+    </table>
+</form>
+{% endblock %}

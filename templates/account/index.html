@@ -1,0 +1,25 @@
+{% extends "basehtml.html" %}
+
+{% load staticfiles %}
+
+{% block 'title' %}Account{% endblock %}
+
+{% block 'content' %}
+    <p style="padding-bottom: 1px;"></p>
+    <center><h2>ACCOUNT</h2></center>
+    <div align="center" style="padding-bottom: 5px;">
+        <a href="changepassword">
+            <img src={% static 'img/changePassBtn.png' %} height="35" width="154"></img>
+        </a>
+    </div>
+    <div align="center" style="padding-bottom: 5px;">
+        <a href="events">
+            <img src={% static 'img/eventsBtn.png' %} height="35" width="154"></img>
+        </a>
+    </div>
+    <div align="center" style="padding-bottom: 5px;">
+        <a href="/logout">
+            <img src={% static 'img/logoutBtn.png' %} height="35" width="154"></img>
+        </a>
+    </div>
+{% endblock %}

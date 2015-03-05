@@ -1,0 +1,43 @@
+{% extends "basehtml.html" %}
+
+{% block 'title' %} {{ post.title }} {% endblock %}
+
+{% block 'content' %}
+    <script type="text/javascript">
+    function doreview(cid, action)
+    {
+        $.post("/news/review/",
+                               {
+                                comment_id: cid,
+                                action: action,
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                               },
+                function (x, y)
+                {
+                    location.reload();
+                }
+            );
+    };
+    </script>
+    
+    <div id="posttable" style="background-color: #{{ post.colorcode }};">
+        {% for comment in comments %}
+            <div id="commentboxuser" style="padding: 2px;">
+                <span style="font-size: 14px;"><i>{{ comment.authorname }}</i> on <i>{{ comment.date }}</i></span><br>
+                <span style="font-size: 14px;"><i>POST: <a href="/news/post/{{ comment.post.id }}">{{ comment.post }}</a></i></span>
+                <p>{{ comment.comment }}</p>
+                <p align="center">
+                    <a href="javascript:doreview('{{ comment.id }}', 'apr');">APPROVE</a>
+                    <a href="javascript:doreview('{{ comment.id }}', 'rej');">REJECT</a>
+                </p>
+            </div>
+            {% if not comment.last %}
+                <br>
+            {% endif %}
+        {% empty %}
+        <p style="padding-bottom: 1px;"></p>
+        <h2 align="center">No comments pending review!</p>
+        {% endfor %}
+        
+    </div>
+{% endblock %}
