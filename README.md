@@ -1,7 +1,6 @@
 # Toontown Next Website
 
-====
-Requirements
+# Requirements
  - Use pip to install:
 
     `pip install git+https://github.com/django-nonrel/django@nonrel-1.5`
@@ -12,13 +11,12 @@ Requirements
 
  - MongoDB on localhost
  
-====
-Running
+# Running
 
  1. Start a python smtp server that redirects all emails to stdout:
- 2. 
-    `python -m smtpd -n -c DebuggingServer localhost:1025`
+ 
+  `python -m smtpd -n -c DebuggingServer localhost:1025`
  
  2. Run Django:
- 3. 
-    `python manage.py runserver` (add `0.0.0.0:8000` to allow external access)
+  
+   `python manage.py runserver` (add `0.0.0.0:8000` to allow external access)
