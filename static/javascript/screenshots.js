@@ -10,12 +10,12 @@ function changeImage() {
 changeImage();
 
 function nextImage() {
-    idx = (idx + 1) % 20;
+    idx = (idx + 1) % 22;
     changeImage();
 };
 
 function previousImage() {
-    idx = (idx - 1) % 20;
-    if (idx < 0) idx += 20;
+    idx = (idx - 1) % 22;
+    if (idx < 0) idx += 22;
     changeImage();
 };
