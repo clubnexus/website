@@ -5,7 +5,8 @@
 {% block 'title' %}Invasions{% endblock %}
 
 {% block 'content' %}
-<br>
+<div style="background-color: #4c4c4c;">
+    <br>
 
 {% if error %}
     <div id="errorbox" width="424" align="center">{{ error }}</div>
@@ -22,7 +23,7 @@
         </td></tr>
         <tr><td align="center">
                 <img src="{% static 'img/cogs/' %}{{ district.invasion.pic }}.png" alt="{{ district.invasion.cogName }}"
-                     style="width: 30%; height: 10%">
+                     style="width: 35%; height: 25%">
             </td></td>
         </tr>
         <tr><td align="center">Duration: 
@@ -40,5 +41,5 @@
     </table>
     {% endfor %}
 {% endif %}
-
+</div>
 {% endblock %}

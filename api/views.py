@@ -5,12 +5,47 @@ from ttsite.settings import API_RELAY
 import urllib
 import json
 
+WANT_INVASION_DEBUG = 1
+import os
+suitHeadTypes = ['f',
+ 'p',
+ 'ym',
+ 'mm',
+ 'ds',
+ 'hh',
+ 'cr',
+ 'tbc',
+ 'bf',
+ 'b',
+ 'dt',
+ 'ac',
+ 'bs',
+ 'sd',
+ 'le',
+ 'bw',
+ 'sc',
+ 'pp',
+ 'tw',
+ 'bc',
+ 'nc',
+ 'mb',
+ 'ls',
+ 'rb',
+ 'cc',
+ 'tm',
+ 'nd',
+ 'gh',
+ 'ms',
+ 'tf',
+ 'm',
+ 'mh']
+
 def __convertTime(value):
     if not value:
         return '-'
         
     r = []
-    u = [('s', 60), ('min', 60), ('h', 24), ('day', 0)]
+    u = [('s', 60), ('min', 60), ('h', 24), ('d', 0)]
     while u and value:
         unit, mod = u.pop(0)
         if not mod:
@@ -23,6 +58,20 @@ def __convertTime(value):
             r.append('%d%s' % (x, unit))
         
     return ' '.join(r[::-1])
+    
+def __get_debug_invasion():
+    r = {"error": None}
+    for i in xrange(32):
+        r[`i`] = {
+        'cogFullName': [os.urandom(4).encode('hex'), '', ''],
+        'cogName': suitHeadTypes[i],
+        'districtName': os.urandom(7).encode('hex'),
+        'duration': 1,
+        'numCogs': int(ord(os.urandom(1)) * 99),
+        'remaining': int(-ord(os.urandom(1)) ** 2.5),
+        'skel': False,
+        }
+    return r
 
 class _District:
     pass
@@ -30,7 +79,7 @@ class _District:
 class _Invasion:
     pass
 
-def __doRequest(url, args):
+def __doRequest(url, args={}):
     ag = '&'.join('%s=%s' % (x, y) for x, y in args.items())
     url = "http://%s%s?%s" % (API_RELAY, url, ag)
     try:
@@ -40,7 +89,12 @@ def __doRequest(url, args):
         return {'error': 'Unable to reach server.'}
 
 def TT_api_invasions(request):
-    data = __doRequest('/invasions', {'lang': 'l3'})
+    if WANT_INVASION_DEBUG:
+        data = __get_debug_invasion()
+        
+    else:
+        data = __doRequest('/invasions')
+        
     error = data.pop('error')
     
     districts = []

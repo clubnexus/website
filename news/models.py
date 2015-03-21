@@ -60,7 +60,7 @@ def encode_image(high, low):
     return high << 6 | low
     
 def decode_image_raw(code):
-    return code >> 6, code & 64
+    return code >> 6, code & 63
 
 def decode_image(code):
     high, low = decode_image_raw(code)
