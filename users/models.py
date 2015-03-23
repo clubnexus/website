@@ -30,8 +30,8 @@ class UserExt(models.Model):
         if len(username) < 6:
             return 'Username too short (min. 6 caracthers)'
             
-        if len(username) > 20:
-            return 'Username too large (max. 20 caracthers)'
+        if len(username) > 32:
+            return 'Username too large (max. 32 caracthers)'
         
         for c in username:
             if c not in ALLOWED_CHARS:
