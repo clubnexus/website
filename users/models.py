@@ -28,10 +28,10 @@ class UserExt(models.Model):
     @staticmethod
     def validate_username(username):
         if len(username) < 6:
-            return 'Username too short (min. 6 caracthers)'
+            return 'Username too short (min. 6 characters)'
             
-        if len(username) > 32:
-            return 'Username too large (max. 32 caracthers)'
+        if len(username) > 20:
+            return 'Username too long (max. 20 characters)'
         
         for c in username:
             if c not in ALLOWED_CHARS:
@@ -42,10 +42,10 @@ class UserExt(models.Model):
     @staticmethod
     def validate_password(password):
         if len(password) < 6:
-            return 'Password too short (min. 6 caracthers)'
+            return 'Password too short (min. 6 characters)'
             
-        if len(password) > 20:
-            return 'Password too long (max. 20 caracthers)'
+        if len(password) > 32:
+            return 'Password too long (max. 32 characters)'
         
         elif password == 'correcthorsebatterystaple':
             return 'u w0t m8'

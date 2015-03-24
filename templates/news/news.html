@@ -16,7 +16,7 @@
                 <img src="/{{ news.pic }}" alt="{{ news.title }}" style="width: 105%; position: relative; left: -10px; height: 250px;"></img>
                 <p>{{ news.commentinfo }}</p>
             </div>
-            <img src="/static/img/line.gif" border="0" height="1"><br>
+            <img src="{% static 'img/line.gif' %}" border="0" height="1"><br>
         {% endfor %}
     {% else %}
         <div id="posttable" align="center">
