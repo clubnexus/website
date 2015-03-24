@@ -14,7 +14,7 @@ DEBUG = TEMPLATE_DEBUG = (SECRET_KEY == __default_key)
 ALLOWED_HOSTS = []
 
 if not DEBUG:        
-    ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'toontownnext.net']
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'toontownnext.net', 'xktg.toontownnext.net']
 
 # Application definition
 INSTALLED_APPS = (
