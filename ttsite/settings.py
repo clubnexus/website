@@ -84,10 +84,7 @@ CKEDITOR_UPLOAD_PATH = POST_PIC_UPLOAD_DIR
 CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
 
 # Email
-DEFAULT_FROM_EMAIL = 'donotreply@toontownnext.net'
-SERVER_EMAIL = DEFAULT_FROM_EMAIL
-
-if DEBUG:
+if DEBUG and os.environ.get('FORCE_EMAIL_MODE', '') != 'PROD':
     EMAIL_HOST = 'localhost'
     EMAIL_PORT = 1025
 
@@ -99,6 +96,8 @@ else:
     EMAIL_HOST_USER = os.environ.get('EMAIL_USER', 'clubnexus1@gmail.com')
     EMAIL_HOST_PASSWORD = os.environ['EMAIL_PASSWORD']
     EMAIL_PORT = 587
+    
+DEFAULT_FROM_EMAIL = SERVER_EMAIL = EMAIL_HOST
 
 # API
 API_RELAY = 'localhost:19200'

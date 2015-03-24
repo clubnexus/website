@@ -6,8 +6,9 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from django.core.mail import EmailMessage
 
-from ttsite import util
+from ttsite import settings, util
 
 from forms import UserForm
 from models import UserExt
@@ -111,7 +112,9 @@ def TT_register(request):
                 token = os.urandom(32).encode('hex')
                 
                 try:
-                    user.email_user('Registration', EMAILDATA % locals())
+                    msg = EmailMessage('Registration', EMAILDATA % locals(), settings.DEFAULT_FROM_EMAIL, [email])
+                    msg.content_subtype = 'html'
+                    msg.send()
 
                 except:
                     raise
@@ -242,7 +245,9 @@ def TT_register_resend(request):
                 token = userext.email_token
                 baseurl = request.get_host()
             
-                user.email_user('Registration', EMAILDATA % locals())
+                msg = EmailMessage('Registration', EMAILDATA % locals(), settings.DEFAULT_FROM_EMAIL, [user.email])
+                msg.content_subtype = 'html'
+                msg.send()
             
                 request.session['registersuccessctx'] = 'Registration email resent.'
                 return HttpResponseRedirect('/register/success')
@@ -273,7 +278,9 @@ def TT_forgotpass(request):
                 token = userext.gen_reset_token()
                 baseurl = request.get_host()
             
-                user.email_user('Password reset', FORGOTPASS % locals())
+                msg = EmailMessage('Password Reset', FORGOTPASS % locals(), settings.DEFAULT_FROM_EMAIL, [user.email])
+                msg.content_subtype = 'html'
+                msg.send()
 
                 request.session['registersuccessctx'] = 'Password reset email sent.'
                 request.session['registersuccessextra'] = '<p><i>Make sure to use link provided in your email soon, as it will be invalidated within the next 36 hours.</i></p>'
