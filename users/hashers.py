@@ -4,5 +4,6 @@ import hashlib
 
 class PBKDF2SHA512PasswordHasher(PBKDF2PasswordHasher):
     algorithm = "pbkdf2_sha512"
-    iterations = 60000
+    iterations = 10000
     digest = hashlib.sha512
+    
