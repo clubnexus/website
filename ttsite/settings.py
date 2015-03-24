@@ -5,8 +5,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 __default_key = 'c8au@b3fl5jige=#))s@qf)gt@=kkh17*@mf07ki*8@mdfotba'
 
 __environ = {}
-if os.path.isfile('../site.env'):
-    with open('../site.env', 'rb') as f:
+if os.path.isfile(os.path.join(BASE_DIR, '..', 'site.env')):
+    with open(os.path.join(BASE_DIR, '..', 'site.env'), 'rb') as f:
         __environ = json.loads(f.read())
 
 SECRET_KEY = __environ.get('SECRET_KEY', __default_key)
