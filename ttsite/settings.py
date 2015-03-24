@@ -1,10 +1,15 @@
-import os
+import json, os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 __default_key = 'c8au@b3fl5jige=#))s@qf)gt@=kkh17*@mf07ki*8@mdfotba'
 
-SECRET_KEY = os.environ.get('SECRET_KEY', __default_key)
+__environ = {}
+if os.path.isfile('../site.env'):
+    with open('../site.env', 'rb') as f:
+        __environ = json.loads(f.read())
+
+SECRET_KEY = __environ.get('SECRET_KEY', __default_key)
 DEBUG = TEMPLATE_DEBUG = (SECRET_KEY == __default_key)
 ALLOWED_HOSTS = []
 
@@ -84,7 +89,7 @@ CKEDITOR_UPLOAD_PATH = POST_PIC_UPLOAD_DIR
 CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
 
 # Email
-if DEBUG and os.environ.get('FORCE_EMAIL_MODE', '') != 'PROD':
+if DEBUG and __environ.get('FORCE_EMAIL_MODE', '') != 'PROD':
     EMAIL_HOST = 'localhost'
     EMAIL_PORT = 1025
 
@@ -93,8 +98,8 @@ else:
     # N. B. Raises KeyError, on purpose, if EMAIL_PASSOWORD is not set
     EMAIL_USE_TLS = True
     EMAIL_HOST = 'smtp.gmail.com'
-    EMAIL_HOST_USER = os.environ.get('EMAIL_USER', 'clubnexus1@gmail.com')
-    EMAIL_HOST_PASSWORD = os.environ['EMAIL_PASSWORD']
+    EMAIL_HOST_USER = __environ.get('EMAIL_USER', 'clubnexus1@gmail.com')
+    EMAIL_HOST_PASSWORD = __environ['EMAIL_PASSWORD']
     EMAIL_PORT = 587
     
 DEFAULT_FROM_EMAIL = SERVER_EMAIL = EMAIL_HOST
