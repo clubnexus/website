@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage
+from django.core.mail import get_connection
 
 from ttsite import settings, util
 
@@ -31,6 +32,13 @@ to change your password.</p>
 <p>If you didn't request the change, you can safely ignore this email.</p>
 <p>Yours,</p>
 <p>Club Nexus</p>'''
+
+def __get_email(to, subject, message):
+    connection = get_connection(use_tls=settings.EMAIL_USE_TLS, host=settings.EMAIL_HOST, port=settings.EMAIL_PORT,
+                                username=settings.EMAIL_HOST_USER, password=settings.EMAIL_HOST_PASSWORD)
+    e = EmailMessage(subject, message, settings.DEFAULT_FROM_EMAIL, [to], connection=connection)
+    e.content_subtype = 'html'
+    return e
 
 def TT_login(request, *args, **kwargs):
     if request.user.is_authenticated():
@@ -112,9 +120,7 @@ def TT_register(request):
                 token = os.urandom(32).encode('hex')
                 
                 try:
-                    msg = EmailMessage('Registration', EMAILDATA % locals(), settings.DEFAULT_FROM_EMAIL, [email])
-                    msg.content_subtype = 'html'
-                    msg.send()
+                    __get_email(email, 'Registration', EMAILDATA % locals()).send()
 
                 except:
                     raise
@@ -245,9 +251,7 @@ def TT_register_resend(request):
                 token = userext.email_token
                 baseurl = request.get_host()
             
-                msg = EmailMessage('Registration', EMAILDATA % locals(), settings.DEFAULT_FROM_EMAIL, [user.email])
-                msg.content_subtype = 'html'
-                msg.send()
+                __get_email(user.email, 'Registration', EMAILDATA % locals()).send()
             
                 request.session['registersuccessctx'] = 'Registration email resent.'
                 return HttpResponseRedirect('/register/success')
@@ -278,9 +282,7 @@ def TT_forgotpass(request):
                 token = userext.gen_reset_token()
                 baseurl = request.get_host()
             
-                msg = EmailMessage('Password Reset', FORGOTPASS % locals(), settings.DEFAULT_FROM_EMAIL, [user.email])
-                msg.content_subtype = 'html'
-                msg.send()
+                __get_email(user.email, 'Password Reset', FORGOTPASS % locals()).send()
 
                 request.session['registersuccessctx'] = 'Password reset email sent.'
                 request.session['registersuccessextra'] = '<p><i>Make sure to use link provided in your email soon, as it will be invalidated within the next 36 hours.</i></p>'

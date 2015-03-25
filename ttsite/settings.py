@@ -92,6 +92,9 @@ CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.j
 if DEBUG and __environ.get('FORCE_EMAIL_MODE', '') != 'PROD':
     EMAIL_HOST = 'localhost'
     EMAIL_PORT = 1025
+    EMAIL_USE_TLS = False
+    EMAIL_HOST_USER = ''
+    EMAIL_HOST_PASSWORD = ''
 
 else:
     # Use production settings
