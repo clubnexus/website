@@ -1,4 +1,4 @@
-import json, os, socket
+import json, os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -100,7 +100,7 @@ else:
     # Use production settings
     # N. B. Raises KeyError, on purpose, if EMAIL_PASSOWORD is not set
     EMAIL_USE_TLS = True
-    EMAIL_HOST = socket.gethostbyname('stmp.gmail.com')
+    EMAIL_HOST = 'smtp.gmail.com'
     EMAIL_HOST_USER = __environ.get('EMAIL_USER', 'clubnexus1@gmail.com')
     EMAIL_HOST_PASSWORD = __environ['EMAIL_PASSWORD']
     EMAIL_PORT = 587
