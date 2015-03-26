@@ -1,0 +1,39 @@
+{% extends "basehtml.html" %}
+
+{% block 'title' %}Pending emails{% endblock %}
+
+{% block 'content' %}
+    <script type="text/javascript">
+    function doreview(token)
+    {
+        $.post("/pending/",
+                               {
+                                token: token,
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                               },
+                function (x, y)
+                {
+                    location.reload();
+                }
+            );
+    };
+    </script>
+    
+    <p style="padding-bottom: 1px;"></p>
+    <center><h2>Pending Emails</h2></center>
+    <div>
+        <table id="posttable" border=1 style="text-align: center; border: 5px; border-collapse: collapse;">
+            <tr>
+                <td><span style="font-size: 14px;">Username</span></td>
+                <td><span style="font-size: 14px;">Email</span></td>
+                <td><span style="font-size: 14px;">URL</span></td>
+                <td><span style="font-size: 14px;">DONE</span></td>
+            </tr>
+            {% for p in pd %}
+            <tr>
+                {{ p|safe }}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

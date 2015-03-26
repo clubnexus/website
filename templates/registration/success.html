@@ -1,13 +1,18 @@
 {% extends "basehtml.html" %}
 
-{% block 'title' %}Registered{% endblock %}
+{% load staticfiles %}
+
+{% block 'title' %}Success{% endblock %}
 
 {% block 'content' %}
     <br>
     <div align="center">
-        <p>{{ context }} Please confirm your email before you can login.</p>
-        <p>If you can't find our email, check your spam folder. If it's still not there, <a href="/register/resend">resend confirmation email.</a></p>
+        <p>{{ context }}</p>
         {{ extra|safe }}
+        {% if want_login %}
+            <a href="/login"><img src="{% static 'img/loginBtnS.png' %}" height="30" width="120"/></img></a>
+            <br>
+        {% endif %}
+        <a href="/"><img src="{% static 'img/FrontPageBtn.png' %}" height="30" width="120"></a>
     </div>
 {% endblock %}
-
