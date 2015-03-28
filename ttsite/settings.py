@@ -14,7 +14,7 @@ DEBUG = TEMPLATE_DEBUG = (SECRET_KEY == __default_key)
 ALLOWED_HOSTS = []
 
 if not DEBUG:        
-    ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'toontownnext.net', 'xktg.toontownnext.net']
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'toontownnext.net', 'www.toontownnext.net']
 
 # Application definition
 INSTALLED_APPS = (
@@ -84,7 +84,7 @@ LOGIN_REDIRECT_URL = '/'
 CAPTCHA_ALWAYS_CORRECT = DEBUG or __environ.get('CAPTCHA_ALWAYS_CORRECT', 0)
 
 # News
-POST_PIC_UPLOAD_DIR = STATIC_URL.strip('/') + '/img/posts'
+POST_PIC_UPLOAD_DIR = os.path.join(BASE_DIR, 'static', 'img', 'posts')
 CKEDITOR_UPLOAD_PATH = POST_PIC_UPLOAD_DIR
 CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
 
