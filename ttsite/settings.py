@@ -84,7 +84,7 @@ LOGIN_REDIRECT_URL = '/'
 CAPTCHA_ALWAYS_CORRECT = DEBUG or __environ.get('CAPTCHA_ALWAYS_CORRECT', 0)
 
 # News
-POST_PIC_UPLOAD_DIR = STATIC_URL.strip('/') + '/img/posts'
+POST_PIC_UPLOAD_DIR = __environ.get('UPLOAD_PREFIX', '') + STATIC_URL.strip('/') + '/img/posts'
 CKEDITOR_UPLOAD_PATH = POST_PIC_UPLOAD_DIR
 CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
 
