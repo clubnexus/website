@@ -17,7 +17,7 @@ def get_client_ip(request):
         
     return ip
 
-def add_event(event_type, event_date=None, event_account=0, event_desc_pub='',
+def add_event(event_type, event_date=None, event_account='', event_desc_pub='',
               event_desc_priv='', event_ip_pub=None, event_ip_priv=None,
               request=None):
     if event_date is None:
@@ -34,7 +34,7 @@ def add_event(event_type, event_date=None, event_account=0, event_desc_pub='',
         event_ip_priv = ''
     
     ev = TTEvent(event_type=event_type, event_date=event_date,
-                 event_account=event_account, event_desc_pub=event_desc_pub,
+                 event_account=str(event_account), event_desc_pub=event_desc_pub,
                  event_desc_priv=event_desc_priv, event_ip_pub=event_ip_pub,
                  event_ip_priv=event_ip_priv)
     return ev.save()

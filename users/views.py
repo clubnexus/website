@@ -40,7 +40,7 @@ def TT_login(request, *args, **kwargs):
             user = User.objects.get(username=request.POST['username']).id
             
         except:
-            user = 0
+            user = ''
             
         events.add_event(event_type='FAILED_LOGIN', event_account=user,
                          request=request)

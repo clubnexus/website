@@ -90,3 +90,9 @@ CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.j
 
 # API
 API_RELAY = 'localhost:19200'
+
+__dfgs =  'localhost' if DEBUG else ''
+GAMESERVERS = __environ.get('GAMESERVERS', __dfgs).split(';')
+
+LAUNCHERFILES_URL = STATIC_URL + 'data'
+LAUNCHERFILES_DIR = os.path.join(STATICFILES_DIRS[0], 'data')
