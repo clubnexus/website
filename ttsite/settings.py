@@ -82,6 +82,8 @@ TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 # Users
 LOGIN_REDIRECT_URL = '/'
 CAPTCHA_ALWAYS_CORRECT = DEBUG or __environ.get('CAPTCHA_ALWAYS_CORRECT', 0)
+SESSION_COOKIE_NAME = '__sessionid'
+SESSION_COOKIE_DOMAIN = '.toontownnext.net' if not DEBUG else ''
 
 # News
 POST_PIC_UPLOAD_DIR = __environ.get('UPLOAD_PREFIX', '') + STATIC_URL.strip('/') + '/img/posts'
