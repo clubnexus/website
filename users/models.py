@@ -195,7 +195,7 @@ class UserExt(models.Model):
     def get_ban_history(self):
         record = BanRecord(self.ban_history)
         d = '<tr><td>Start date</td><td>Duration</td><td>Reason</td></tr>'
-        for entry in record.entries:
+        for entry in record.entries[::-1]:
             d += '<tr>%s</tr>' % entry.as_td()
             
         return d
