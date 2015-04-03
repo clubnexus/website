@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 
 from django.contrib.auth import views as auth_views, models as auth_models
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, logout as auth_logout
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
@@ -32,6 +32,19 @@ def TT_login(request, *args, **kwargs):
     r = auth_views.login(request, *args, **kwargs)
     if isinstance(r, HttpResponseRedirect):
         # Login was successful
+        
+        try:
+            userext = UserExt.objects.get(user=request.user.id)
+            
+        except UserExt.DoesNotExist:
+            pass
+            
+        else:
+            if userext.is_banned():
+                auth_logout(request)
+                form = AuthenticationForm(request)
+                return render(request, 'registration/login.html', {'form': form, 'banned': 1, 'bantext': userext.get_last_ban()})
+        
         events.add_event(event_type='SUCCESSFUL_LOGIN', event_account=request.user.id,
                          request=request)
                          
@@ -141,7 +154,16 @@ def TT_account_main(request):
 @events.TT_login_required
 def TT_account_events(request):
     ev = list(events.get_events(request.user.id).order_by('-event_date'))
-    return render(request, 'account/events.html', {'events': ev})
+    
+    bh = ''
+    try:
+        userext = UserExt.objects.get(user=request.user.id)
+        bh = userext.get_ban_history()
+            
+    except UserExt.DoesNotExist:
+        pass
+    
+    return render(request, 'account/events.html', {'events': ev, 'bh': bh})
     
 @events.TT_login_required
 def TT_account_changepassword(request):

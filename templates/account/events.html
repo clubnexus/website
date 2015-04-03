@@ -22,5 +22,12 @@
             </tr>
             {% endfor %}
         </table>
+        {% if bh %}
+            <p style="padding-bottom: 1px;"></p>
+            <center><h2>BAN HISTORY</h2></center>
+            <table id="posttable" border=1 style="text-align: center; border: 5px; border-collapse: collapse;">
+                {{ bh|safe }}
+            </table>
+        {% endif %}
     </div>
 {% endblock %}

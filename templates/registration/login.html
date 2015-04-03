@@ -11,10 +11,15 @@
     <div>
         <table id="registerframe">
                 <tr><td>&nbsp;</td></tr>
-                {% if form.errors %}
+                {% if form.errors or banned %}
                     <tr><td>
                         <div id="errorbox">
+                            {% if banned %}
+                            <p>Your account is banned.</p>
+                            {{ bantext|safe }}<br>
+                            {% else %}
                             <p>Your username and password didn't match. Please try again.</p>
+                            {% endif %}
                         </div>
                     </td></tr>
                 {% endif %}

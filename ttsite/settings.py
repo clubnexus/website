@@ -91,6 +91,7 @@ CKEDITOR_UPLOAD_PATH = POST_PIC_UPLOAD_DIR
 CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
 
 # API
+API_KEY = __environ.get('API_KEY', 'dev')
 API_RELAY = 'localhost:19200'
 
 __dfgs =  'localhost' if DEBUG else ''

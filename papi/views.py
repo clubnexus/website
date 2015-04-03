@@ -1,5 +1,6 @@
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
 from models import PlayCookie
@@ -74,10 +75,9 @@ def PAPI_login(request):
     
     except UserExt.DoesNotExist:
         return genericError()
-        
-    # TO DO
-    # if userext.is_banned():
-    #    return bannedError()
+
+    if userext.is_banned():
+        return bannedError()
     
     if not settings.GAMESERVERS:
         return serverClosedError
@@ -101,4 +101,37 @@ def PAPI_update(request):
             
     baseurl = 'http://%s%s' % (request.get_host(), settings.LAUNCHERFILES_URL)
     return JSONResponse({'files': serverfiles, 'baseurl': baseurl})
+    
+@csrf_exempt
+def PAPI_ban(request):
+    try:
+        databytes = request.POST['data']
+        data = json.loads(databytes)
+        hmac = request.POST['hmac']
+        
+    except:
+        return HttpResponseBadRequest()
+    
+    expected = hashlib.sha512(databytes + settings.API_KEY).hexdigest()
+    value = 0
+    
+    if len(hmac) != len(expected):
+        return HttpResponseForbidden()
+        
+    for x, y in zip(expected, hmac):
+        value |= (x != y)
+        
+    if value:
+        return HttpResponseForbidden()
+        
+    username = data['username']
+    try:
+        user = User.objects.get(username=username)
+        userext = UserExt.objects.get(user=user.id)
+        
+    except (User.DoesNotExist, UserExt.DoesNotExist):
+        return JSONResponse({'error': 'no userext', 'success': False})
+        
+    userext.add_ban(data['banner'].encode('utf-8'), data['duration'], data['reason'].encode('utf-8'))
+    return JSONResponse({'success': True})
     
