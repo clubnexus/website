@@ -46,6 +46,8 @@ genericError = lambda: JSONResponse({'status': LoginSuccess.ServerError, 'messag
 bannedError = lambda: JSONResponse({'status': LoginSuccess.AccountDisabled, 'message': 'Your account is banned. Please try to login from website for more info.'})
 serverClosedError = lambda: JSONResponse({'status': LoginSuccess.ServerClosed, 'message': 'The server is currently closed.'})
 
+invalidCookie = lambda: JSONResponse({'success': False, 'error': 'invalid cookie'})
+
 @csrf_exempt
 def PAPI_login(request):
     try:
@@ -85,10 +87,12 @@ def PAPI_login(request):
         
     gameserver = random.choice(settings.GAMESERVERS)
     cookie = PlayCookie()
+    cookie.username = username
+    cookie.value = os.urandom(16).encode('hex')
     cookie.save()
 
     return JSONResponse({'status': LoginSuccess.Success, 'message': 'OK',
-                         'token': str(cookie.id), 'gameserver': gameserver})
+                         'token': cookie.value, 'gameserver': gameserver})
     
 @csrf_exempt
 def PAPI_update(request):
@@ -180,4 +184,42 @@ def PAPI_names(request):
         res['error'] = 'invalid operation'
         
     return JSONResponse(res)
+    
+@csrf_exempt
+def PAPI_cookie(request):
+    try:
+        databytes = request.POST['data']
+        data = json.loads(databytes)
+        hmac = request.POST['hmac']
+        
+    except:
+        return HttpResponseBadRequest()
+    
+    expected = hashlib.sha512(databytes + settings.API_KEY).hexdigest()
+    value = 0
+    
+    if len(hmac) != len(expected):
+        return HttpResponseForbidden()
+        
+    for x, y in zip(expected, hmac):
+        value |= (x != y)
+        
+    if value:
+        return HttpResponseForbidden()
+        
+    cookie = str(data['cookie'])
+    if len(cookie) <= 8:
+        return invalidCookie()
+
+    try:
+        obj = PlayCookie.objects.get(value=cookie, used=False)
+    
+    except PlayCookie.DoesNotExist:
+        return invalidCookie()
+        
+    username = obj.use()
+    if username is None:
+        return invalidCookie()
+        
+    return JSONResponse({'success': True, 'username': username})
     

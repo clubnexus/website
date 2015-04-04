@@ -9,13 +9,14 @@ STATUS_APR = 2
 class PlayCookie(models.Model):
     username = models.CharField(max_length=200)
     used = models.BooleanField(default=False)
+    value = models.CharField(max_length=32)
     
     def use(self):
         if self.used:
             return None
             
         try:
-            user = User.objects.get(pk=self.username)
+            user = User.objects.get(username=self.username)
             userext = UserExt.objects.get(user=user.id)
         
         except (User.DoesNotExist, UserExt.DoesNotExist):
