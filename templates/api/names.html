@@ -1,0 +1,38 @@
+{% extends "basehtml.html" %}
+
+{% block 'title' %} {{ post.title }} {% endblock %}
+
+{% block 'content' %}
+    <script type="text/javascript">
+    function doreview(avId, action)
+    {
+        $.post("/graphapi/names/",
+                               {
+                                avId: avId,
+                                action: action,
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                               },
+                function (x, y)
+                {
+                    location.reload();
+                }
+            );
+    };
+    </script>
+    
+    <div id="posttable">
+        {% for name in names %}
+            <div id="commentboxuser" style="padding: 2px;">
+                <span style="font-size: 14px;"><i>{{ name.username }}</i> | <i>{{ name.avId }}</i> requested on <i>{{ name.date }}</i></span><br>
+                <p>{{ name.wantedName }}</p>
+                <p align="center">
+                    <a href="javascript:doreview('{{ name.avId }}', 'apr');">APPROVE</a>
+                    <a href="javascript:doreview('{{ name.avId }}', 'rej');">REJECT</a>
+                </p>
+            </div>
+        {% empty %}
+            <p style="padding-bottom: 1px;"></p>
+            <h2 align="center">No names pending review!</p>
+        {% endfor %}
+    </div>
+{% endblock %}

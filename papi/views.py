@@ -2,8 +2,9 @@ from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbid
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from django.utils import timezone
 
-from models import PlayCookie
+from models import PlayCookie, NameState
 
 from users.models import UserExt
 from users import events
@@ -134,4 +135,49 @@ def PAPI_ban(request):
         
     userext.add_ban(data['banner'].encode('utf-8'), data['duration'], data['reason'].encode('utf-8'))
     return JSONResponse({'success': True})
+    
+@csrf_exempt
+def PAPI_names(request):
+    try:
+        databytes = request.POST['data']
+        data = json.loads(databytes)
+        hmac = request.POST['hmac']
+        
+    except:
+        return HttpResponseBadRequest()
+    
+    expected = hashlib.sha512(databytes + settings.API_KEY).hexdigest()
+    value = 0
+    
+    if len(hmac) != len(expected):
+        return HttpResponseForbidden()
+        
+    for x, y in zip(expected, hmac):
+        value |= (x != y)
+        
+    if value:
+        return HttpResponseForbidden()
+        
+    action = data['action']
+    username = data['username']
+    
+    res = {'success': True, 'error': None}
+    if action == 'get':
+        states = NameState.objects.filter(username=username).order_by('date')
+        for state in states:
+            res[state.avId] = state.status
+        
+    elif action == 'set':
+        state = NameState()
+        state.username = username
+        state.wantedName = data['wantedName']
+        state.avId = data['avId']
+        state.date = timezone.now()
+        state.save()
+        
+    else:
+        res['success'] = False
+        res['error'] = 'invalid operation'
+        
+    return JSONResponse(res)
     

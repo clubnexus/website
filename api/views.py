@@ -1,6 +1,9 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from ttsite.settings import API_RELAY
+from users.events import TT_login_required, add_event
+from papi.models import NameState, STATUS_PEN, STATUS_REJ, STATUS_APR
 
 import urllib
 import json
@@ -120,3 +123,44 @@ def TT_api_invasions(request):
         error = 'No invasion found!'
         
     return render(request, 'api/invasion.html', {'error': error, 'districts': districts})
+
+@TT_login_required
+def TT_api_names(request):
+    if not request.user.is_staff:
+        return HttpResponseRedirect('/')
+        
+    if request.method == 'POST':
+        try:
+            avId = int(request.POST['avId'])
+            
+        except:
+            avId = 0
+            
+        action = request.POST.get('action', 'notset')
+        
+        try:
+            namestate = NameState.objects.get(avId=avId, status=STATUS_PEN)
+            
+        except NewsComment.DoesNotExist:
+            pass
+            
+        else:
+            changed = 0
+            
+            if action == 'rej':
+                changed = 1
+                namestate.status = STATUS_REJ
+                
+            elif action == 'apr':
+                changed = 1
+                namestate.status = STATUS_APR
+               
+            if changed:
+                add_event('NAME_%s' % action.upper(), event_account=request.user.id, request=request,
+                           event_desc_pub='%s' % (namestate.wantedName))
+                namestate.mod = request.user.username
+                namestate.save()
+    
+    names = NameState.objects.filter(status=STATUS_PEN).order_by('date')
+    return render(request, 'api/names.html', {'names': names})
+    
