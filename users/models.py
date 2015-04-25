@@ -5,6 +5,12 @@ import string, os, struct, time, datetime
 
 ALLOWED_CHARS = string.ascii_lowercase + string.ascii_uppercase + ''.join([`x` for x in xrange(10)]) + '.-_'
 
+BUG_NEW = 0
+BUG_ACK = 1
+BUG_INVALID = 2
+BUG_CONFIRMED = 3
+BUG_CLOSED = 4
+
 class BanRecord:
     class BanEntry:
         start = 0
@@ -206,6 +212,22 @@ class UserExt(models.Model):
             return 'Unknown user'
             
         return user.username
+        
+class BugReport(models.Model):
+    user = models.CharField(max_length=128)
+    title = models.CharField(max_length=200)
+    data = models.CharField(max_length=4000)
+    date = models.DateTimeField()
+    status = models.IntegerField(default=BUG_NEW)
+    
+    def __init__(self, *args, **kwargs):
+        models.Model.__init__(self, *args, **kwargs)
+        
+        try:
+            self.username = User.objects.get(pk=self.user).username
+        
+        except User.DoesNotExist:
+            self.username = '???'
         
 class TTEvent(models.Model):
     event_type = models.CharField(max_length=60)

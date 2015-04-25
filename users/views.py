@@ -11,8 +11,9 @@ from django.core.mail import get_connection
 
 from ttsite import settings, util
 
-from forms import UserForm
-from models import UserExt
+from forms import UserForm, BugForm
+from models import UserExt, BugReport
+from models import BUG_NEW, BUG_ACK, BUG_INVALID, BUG_CONFIRMED, BUG_CLOSED
 
 import events
 
@@ -315,4 +316,65 @@ def TT_pending(request):
     
 def errorpage(request):
     return render(request, 'error.html', {})
+    
+@events.TT_login_required
+def TT_account_bug(request):
+    error = ''
+    error_captcha = ''
+    
+    if request.method == 'POST':
+        if not util.verify_captcha(request):
+            error_captcha = 'Please confirm that you are not a bot.'
+            
+        else:
+            form = BugForm(data=request.POST)
+            if form.is_valid():
+                data = form.cleaned_data
+            
+                bug = form.save(commit=False)
+                bug.user = request.user.id
+                bug.date = events.timezone.now()
+                bug.save()
+                # N.B. using priv desc because it's not escaped (XSS)
+                events.add_event('BUG_REPORTED', event_account=request.user.id, request=request,
+                                  event_desc_priv='Title: %s' % data['title'])
+                return HttpResponseRedirect('/')
+                
+            else:
+                names = {'data': 'Description'}
+                key, errors = form.errors.items()[0]
+                error = '%s: %s' % (names.get(key, key).title(), errors[0])
+
+    return render(request, 'account/bug.html', {'error': error, 'error_captcha': error_captcha})
+    
+@events.TT_login_required
+def TT_buglist(request):
+    if not request.user.is_staff:
+        return HttpResponseRedirect('/')
+        
+    if request.method == 'POST':
+        bug_id = request.POST.get('bug_id', 'notset')
+        action = request.POST.get('action', '-1')
+        
+        try:
+            bug = BugReport.objects.get(pk=bug_id)
+            action = int(action)
+            if action not in (BUG_NEW, BUG_ACK, BUG_INVALID, BUG_CONFIRMED, BUG_CLOSED):
+                raise ValueError
+                
+            actionName = ('NEW', 'ACK', 'INVALID', 'CONFIRMED', 'CLOSED')[action]
+            
+        except (BugReport.DoesNotExist, ValueError):
+            pass
+            
+        else:
+            bug.status = action
+            bug.save()
+
+            events.add_event('BUG_MARK_AS_%s' % actionName.upper(), event_account=request.user.id, request=request,
+                             event_desc_pub='bug=%s' % bug.id)
+            
+    bugs = BugReport.objects.order_by('-date')
+    bugs = filter(lambda bug: bug.status in (BUG_NEW, BUG_ACK, BUG_CONFIRMED), bugs)
+    return render(request, 'bugs.html', {'bugs': bugs})
     

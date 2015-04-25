@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     url(r'^forgotpass/$', users_views.TT_forgotpass, name='TT Forgot Password Page'),
     url(r'^resetpass/(?P<token>\w+)', users_views.TT_resetpass, name='TT Forgot Password Page'),
     url(r'^pending/$', users_views.TT_pending, name='TT Pending Emails'),
+    url(r'^buglist/$', users_views.TT_buglist, name='TT Buglist'),
     
     url(r'^account/', include('users.urls', namespace='account'))
 )

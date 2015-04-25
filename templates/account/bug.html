@@ -1,0 +1,36 @@
+{% extends "basehtml.html" %}
+
+{% load staticfiles %}
+
+{% block 'title' %}Report a bug{% endblock %}
+
+{% block 'content' %}
+    <p style="padding-bottom: 1px;"></p>
+    <center><h2>REPORT A BUG</h2></center>
+    <form method="post" action="/account/bug/">
+        {% csrf_token %}
+        <table id="registerframe">    
+            {% if error %}
+            <tr><td><span id="errorbox">{{ error }}</td></tr>
+            <tr><td><p style="padding-bottom: 2px;"></p></td></tr>
+            {% endif %}
+            
+            <tr><td>Title</td></tr>
+            <tr><td><input name="title" type="text"/></td></tr>
+            <tr><td><p style="padding-bottom: 6px;"></p></td></tr>
+            
+            <tr><td>Please describe what happened and steps to reproduce</td></tr>
+            <tr><td><textarea name="data" rows="10" cols="50"></textarea></td></tr>
+            <tr><td><p style="padding-bottom: 6px;"></p></td></tr>
+
+            <tr><td><div id="recaptcha" align="center"></div></tr></td>
+            {% if error_captcha %}
+                <tr><td>
+                    <span id="errorbox">{{ error_captcha }}</span>
+                </td></tr>
+            {% endif %}
+
+            <tr><td><input type="image" src="{% static 'img/reportBug.png' %}" height="35" width="154"></td></tr>
+        </table>
+    </form>
+{% endblock %}

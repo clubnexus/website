@@ -1,0 +1,50 @@
+{% extends "basehtml.html" %}
+
+{% block 'title' %} {{ post.title }} {% endblock %}
+
+{% block 'content' %}
+    <script type="text/javascript">
+    function doaction(bid, action)
+    {
+        $.post("/buglist/",
+                               {
+                                bug_id: bid,
+                                action: action,
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                               },
+                function (x, y)
+                {
+                    location.reload();
+                }
+            );
+    };
+    </script>
+    
+    <div id="posttable">
+        {% for bug in bugs %}
+            <div id="commentboxuser" style="padding: 2px;">
+                <span style="font-size: 14px;"><i>{{ bug.username }}</i> reported on <i>{{ bug.date }}</i></span><br>
+                <p>{{ bug.data }}</p>
+                <p>MARK AS:</p>
+                <p align="center">
+                    {% if bug.status == 0 %}
+                        <a href="javascript:doaction('{{ bug.id }}', 1);">ACK</a>
+                        <a href="javascript:doaction('{{ bug.id }}', 3);">CONFIRMED</a>
+                        <a href="javascript:doaction('{{ bug.id }}', 2);">INVALID</a>
+                    {% elif bug.status == 1 %}
+                        <a href="javascript:doaction('{{ bug.id }}', 2);">INVALID</a>
+                        <a href="javascript:doaction('{{ bug.id }}', 3);">CONFIRMED</a>
+                        <a href="javascript:doaction('{{ bug.id }}', 4);">CLOSED</a>
+                    {% elif bug.status == 3 %}
+                        <a href="javascript:doaction('{{ bug.id }}', 2);">INVALID</a>
+                        <a href="javascript:doaction('{{ bug.id }}', 4);">CLOSED</a>
+                    {% endif %}
+                </p>
+            </div>
+            <br>
+        {% empty %}
+            <p style="padding-bottom: 1px;"></p>
+            <h2 align="center">No bugs pending review!</p>
+        {% endfor %}
+    </div>
+{% endblock %}
