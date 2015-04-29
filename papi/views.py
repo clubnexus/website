@@ -99,6 +99,9 @@ def PAPI_update(request):
     serverfiles = []
     for x, y, z in os.walk(settings.LAUNCHERFILES_DIR):
         for file in z:
+            if '.gitignore' in file:
+                continue
+                
             local = os.path.join(x, file)
             url = local[len(settings.LAUNCHERFILES_DIR):].replace('\\', '/').strip('/')
             hash = get_file_hash(local)
