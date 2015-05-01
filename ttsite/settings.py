@@ -91,11 +91,15 @@ CKEDITOR_UPLOAD_PATH = POST_PIC_UPLOAD_DIR
 CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
 
 # API
-API_KEY = __environ.get('API_KEY', 'dev')
-API_RELAY = 'localhost:19200'
-
 __dfgs =  'localhost' if DEBUG else ''
 GAMESERVERS = __environ.get('GAMESERVERS', __dfgs).split(';')
+
+API_KEY = __environ.get('API_KEY', 'dev')
+
+__dfrl = GAMESERVERS[0] + ':19200' if GAMESERVERS else ''
+API_RELAY = __environ.get('API_RELAY', __dfrl)
+
+WANT_INVASION_DEBUG = __environ.get('WANT_INVASION_DEBUG', not bool(API_RELAY))
 
 LAUNCHERFILES_URL = STATIC_URL + 'data'
 LAUNCHERFILES_DIR = os.path.join(STATICFILES_DIRS[0], 'data')

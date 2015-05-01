@@ -1,15 +1,14 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from ttsite.settings import API_RELAY
+from ttsite.settings import API_RELAY, WANT_INVASION_DEBUG
 from users.events import TT_login_required, add_event
 from papi.models import NameState, STATUS_PEN, STATUS_REJ, STATUS_APR
 
 import urllib
 import json
-
-WANT_INVASION_DEBUG = 1
 import os
+
 suitHeadTypes = ['f',
  'p',
  'ym',
