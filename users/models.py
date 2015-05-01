@@ -226,7 +226,7 @@ class BugReport(models.Model):
         try:
             self.username = User.objects.get(pk=self.user).username
         
-        except User.DoesNotExist:
+        except:
             self.username = '???'
         
 class TTEvent(models.Model):
