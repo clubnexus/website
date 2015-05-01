@@ -5,7 +5,7 @@ from ttsite.settings import API_RELAY, WANT_INVASION_DEBUG
 from users.events import TT_login_required, add_event
 from papi.models import NameState, STATUS_PEN, STATUS_REJ, STATUS_APR
 
-import urllib
+import urllib2
 import json
 import os
 
@@ -85,7 +85,8 @@ def __doRequest(url, args={}):
     ag = '&'.join('%s=%s' % (x, y) for x, y in args.items())
     url = "http://%s%s?%s" % (API_RELAY, url, ag)
     try:
-        return json.loads(urllib.urlopen(url).read())
+        req = urllib2.Request(url)
+        return json.loads(urllib.urlopen(req, timeout=8).read())
         
     except:
         return {'error': 'Unable to reach server.'}
