@@ -278,7 +278,7 @@ def TT_resetpass(request, token):
     
 @events.TT_login_required
 def TT_pending(request):
-    if not request.user.is_staff:
+    if not request.user.is_superuser:
         return HttpResponseRedirect('/')
         
     if request.method == 'POST':
