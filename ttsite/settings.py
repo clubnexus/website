@@ -10,11 +10,11 @@ if os.path.isfile(os.path.join(BASE_DIR, '..', 'site.env')):
         __environ = json.loads(f.read())
 
 SECRET_KEY = __environ.get('SECRET_KEY', __default_key)
-DEBUG = TEMPLATE_DEBUG = (SECRET_KEY == __default_key)
-ALLOWED_HOSTS = []
+DEBUG = TEMPLATE_DEBUG = (SECRET_KEY == __default_key) or __environ.get('FORCE_DEBUG', False)
+ALLOWED_HOSTS = __environ.get('HOSTS', '').split(';')
 
 if not DEBUG:        
-    ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'toontownnext.net', 'www.toontownnext.net']
+    ALLOWED_HOSTS.extend(['127.0.0.1', 'localhost', 'toontownnext.net', 'www.toontownnext.net'])
 
 # Application definition
 INSTALLED_APPS = (
