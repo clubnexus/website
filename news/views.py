@@ -85,7 +85,7 @@ def comment(request, post_id):
 
 @TT_login_required
 def make(request):
-    if not request.user.is_staff:
+    if not request.user.is_superuser:
         return HttpResponseRedirect('/')
     
     errors = []
