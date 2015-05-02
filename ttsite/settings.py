@@ -100,6 +100,3 @@ __dfrl = GAMESERVERS[0] + ':19200' if GAMESERVERS else ''
 API_RELAY = __environ.get('API_RELAY', __dfrl)
 
 WANT_INVASION_DEBUG = __environ.get('WANT_INVASION_DEBUG', not bool(API_RELAY))
-
-LAUNCHERFILES_URL = STATIC_URL + 'data'
-LAUNCHERFILES_DIR = os.path.join(STATICFILES_DIRS[0], 'data')

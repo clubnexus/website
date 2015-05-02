@@ -95,22 +95,6 @@ def PAPI_login(request):
                          'token': cookie.value, 'gameserver': gameserver})
     
 @csrf_exempt
-def PAPI_update(request):
-    serverfiles = []
-    for x, y, z in os.walk(settings.LAUNCHERFILES_DIR):
-        for file in z:
-            if '.gitignore' in file:
-                continue
-                
-            local = os.path.join(x, file)
-            url = local[len(settings.LAUNCHERFILES_DIR):].replace('\\', '/').strip('/')
-            hash = get_file_hash(local)
-            serverfiles.append([url, hash])
-            
-    baseurl = 'http://%s%s' % (request.get_host(), settings.LAUNCHERFILES_URL)
-    return JSONResponse({'files': serverfiles, 'baseurl': baseurl})
-    
-@csrf_exempt
 def PAPI_ban(request):
     try:
         databytes = request.POST['data']
