@@ -2,9 +2,10 @@ from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbid
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from django.shortcuts import render
 from django.utils import timezone
 
-from models import PlayCookie, NameState
+from models import PlayCookie, NameState, Gameserver
 
 from users.models import UserExt
 from users import events
@@ -82,10 +83,11 @@ def PAPI_login(request):
     if userext.is_banned():
         return bannedError()
     
-    if not settings.GAMESERVERS:
+    gameservers = Gameserver.objects.order_by('-name')
+    if not gameservers:
         return serverClosedError
         
-    gameserver = random.choice(settings.GAMESERVERS)
+    gameserver = random.choice(gameservers)
     cookie = PlayCookie()
     cookie.username = username
     cookie.value = os.urandom(16).encode('hex')
@@ -230,4 +232,46 @@ def PAPI_gentoken(request, username):
     cookie.save()
 
     return JSONResponse({'status': LoginSuccess.Success, 'token': cookie.value})
+    
+@events.TT_login_required
+def PAPI_servers(request):
+    if not request.user.is_staff:
+        return HttpResponseRedirect('/')
+        
+    if request.method == 'POST':
+        server_id = request.POST.get('server_id', 'notset')
+        action = request.POST.get('action', '')
+        arg = ''
+        
+        try:
+            action, arg = action.split('_', 1)
+            if action == 'change':
+                gameserver = Gameserver.objects.get(pk=server_id)
+                gameserver.open = bool(int(arg))
+                gameserver.save()
+                
+            elif action == 'add':
+                arg = request.POST.get('name', '')
+                if not '.' in arg:
+                    raise ValueError
+                    
+                gameserver = Gameserver(name=arg)
+                gameserver.save()
+                
+            elif action == 'del':
+                gameserver = Gameserver.objects.get(pk=server_id)
+                gameserver.delete()
+                
+            else:
+                raise ValueError(action)
+            
+        except (Gameserver.DoesNotExist, ValueError):
+            pass
+            
+        else:
+            events.add_event('GAMESERVER_%s' % action.upper(), event_account=request.user.id, request=request,
+                             event_desc_pub='arg=%s' % arg)
+            
+    servers = Gameserver.objects.order_by('-name')
+    return render(request, 'api/servers.html', {'servers': servers})
     

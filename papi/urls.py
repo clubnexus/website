@@ -8,4 +8,5 @@ urlpatterns = patterns('',
     url(r'^names/$', views.PAPI_names, name='ban'),
     url(r'^cookie/$', views.PAPI_cookie, name='cookie'),
     url(r'^gentoken/(?P<username>\w+)/$', views.PAPI_gentoken, name='gentoken'),
+    url(r'^servers/$', views.PAPI_servers, name='gentoken'),
 )

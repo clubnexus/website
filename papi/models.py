@@ -37,3 +37,7 @@ class NameState(models.Model):
     mod = models.CharField(max_length=200)
     date = models.DateTimeField()
     
+class Gameserver(models.Model):
+    name = models.CharField(max_length=200)
+    open = models.BooleanField(default=False)
+    
