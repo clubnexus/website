@@ -85,7 +85,7 @@ def PAPI_login(request):
     
     gameservers = Gameserver.objects.order_by('-name')
     if not gameservers:
-        return serverClosedError
+        return serverClosedError()
         
     gameserver = random.choice(gameservers)
     cookie = PlayCookie()
