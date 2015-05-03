@@ -87,7 +87,7 @@ def PAPI_login(request):
     if not gameservers:
         return serverClosedError()
         
-    gameserver = random.choice(gameservers)
+    gameserver = random.choice([x.name for x in gameservers])
     cookie = PlayCookie()
     cookie.username = username
     cookie.value = os.urandom(16).encode('hex')
