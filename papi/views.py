@@ -210,3 +210,24 @@ def PAPI_cookie(request):
         
     return JSONResponse({'success': True, 'username': username})
     
+def PAPI_gentoken(request, username):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    
+    try:
+        user = User.objects.get(username=username)
+        if user is None:
+            raise ValueError('not found')
+            
+        userext = UserExt.objects.get(user=user.id)
+
+    except Exception as e:
+        return JSONResponse({'status': LoginSuccess.ServerError, 'message': repr(e)})
+        
+    cookie = PlayCookie()
+    cookie.username = username
+    cookie.value = os.urandom(16).encode('hex')
+    cookie.save()
+
+    return JSONResponse({'status': LoginSuccess.Success, 'token': cookie.value})
+    
