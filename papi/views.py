@@ -83,7 +83,7 @@ def PAPI_login(request):
     if userext.is_banned():
         return bannedError()
     
-    gameservers = Gameserver.objects.get(open=True)
+    gameservers = Gameserver.objects.filter(open=True)
     if not gameservers:
         return serverClosedError()
         
