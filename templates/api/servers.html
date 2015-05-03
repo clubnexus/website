@@ -1,0 +1,51 @@
+{% extends "basehtml.html" %}
+
+{% block 'title' %} {{ post.title }} {% endblock %}
+
+{% block 'content' %}
+    <script type="text/javascript">
+    function doaction(sid, action, arg)
+    {
+        $.post("/api/servers/",
+                               {
+                                server_id: sid,
+                                action: action + '_' + arg,
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                               },
+                function (x, y)
+                {
+                    location.reload();
+                }
+            );
+    };
+    </script>
+    
+    <div id="posttable">
+        {% for server in servers %}
+            <div id="commentboxuser" style="padding: 2px;">
+                <p>{{ server.name }}</p>
+                <p>Is open: {{ server.open }}</p>
+                {% if server.open %}
+                    <a href="javascript:doaction('{{ server.id }}', 'change', '0');">CLOSE</a>
+                {% else %}
+                    <a href="javascript:doaction('{{ server.id }}', 'change', '1');">OPEN</a>
+                {% endif %}
+                <a href="javascript:doaction('{{ server.id }}', 'del', '');">DELETE</a>
+                </p>
+            </div>
+            <br>
+        {% empty %}
+            <p style="padding-bottom: 1px;"></p>
+            <h2 align="center">No servers!</p>
+        {% endfor %}
+        <div align="center">
+            <h3>Add a server</h3>
+            <form method="POST" action="/api/servers/">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add_0"/>
+                Name: <input type="text" name="name"/><br><br>
+                <input type="submit"/>
+            </form>
+        </div>
+    </div>
+{% endblock %}
