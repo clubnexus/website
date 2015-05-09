@@ -5,16 +5,21 @@
 {% block 'title' %}Play Now{% endblock %}
 
 {% block 'content' %}
-<br>
-<img src="{% static 'img/blog-down.jpg' %}" alt="" border="0" height="300" width="424">
-<br>
-<br>
+<div id="main" align="center">
+    <h1>Play now!</h1>
+    <p>Toontown Next is only available on Windows at the moment.</p>
+    <br>
 
-<font size="2" face="arial,helvetica">
-    <p align="center">
-Woah! Slow down now!</p>
+    <a href="{% static 'TTN_win32_setup.exe' %}">
+        <img src="{% static 'img/download_win.png' %}"></img>
+    </a><br>
 
-    <p align="center">The game is still currently being worked on, but it should
-be coming out to the public in a short time! Thank you for your patience!</p>
-</font>
+    <a href="#">
+        <img src="{% static 'img/download_linux.png' %}"></img>
+    </a><br>
+
+    <a href="#">
+        <img src="{% static 'img/download_mac.png' %}"></img>
+    </a><br>
+</div>
 {% endblock %}
