@@ -46,8 +46,11 @@ loginError = lambda: JSONResponse({'status': LoginSuccess.IncorrectUserOrPasswor
 genericError = lambda: JSONResponse({'status': LoginSuccess.ServerError, 'message': 'Something went wrong. Please try again.'})
 bannedError = lambda: JSONResponse({'status': LoginSuccess.AccountDisabled, 'message': 'Your account is banned. Please try to login from website for more info.'})
 serverClosedError = lambda: JSONResponse({'status': LoginSuccess.ServerClosed, 'message': 'The server is currently closed.'})
+updateRequiredError = lambda: JSONResponse({'status': LoginSuccess.UnknownError, 'message': 'A new version of the launcher is available. Please download and install the new version from the website.'})
 
 invalidCookie = lambda: JSONResponse({'success': False, 'error': 'invalid cookie'})
+
+OLD_LAUNCHERS = ['launcher-1.0']
 
 @csrf_exempt
 def PAPI_login(request):
@@ -59,6 +62,11 @@ def PAPI_login(request):
         
     username = data.get('username', '')
     password = data.get('password', '')
+    version = data.get('version', 'unset')
+    
+    if version in OLD_LAUNCHERS:
+        return updateRequiredError()
+    
     if not username or not password:
         return loginError()
         

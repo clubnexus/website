@@ -23,7 +23,8 @@ urlpatterns = patterns('',
     url(r'^pending/$', users_views.TT_pending, name='TT Pending Emails'),
     url(r'^buglist/$', users_views.TT_buglist, name='TT Buglist'),
     
-    url(r'^account/', include('users.urls', namespace='account'))
+    url(r'^account/', include('users.urls', namespace='account')),
+    url(r'^toptoons/', include('toptoons.urls', namespace='toptoons')),
 )
 
 handler400 = 'users.views.errorpage'
