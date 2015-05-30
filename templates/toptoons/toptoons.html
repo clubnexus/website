@@ -1,0 +1,33 @@
+{% extends "basehtml.html" %}
+
+{% block 'title' %}Top Toons{% endblock %}
+
+{% block 'content' %}
+    <p style="padding-bottom: 1px;"></p>
+    <center><h1>TOP TOONS OF THE MONTH</h1</center>
+    <div id="posttable">
+        {% for month in monthList %}
+            <hr>
+            <span style="font-size: 22px;">{{ month.text }}</span>
+            <hr>
+            {% for category in month.categories %}
+                <div id="category">
+                    <span style="font-size: 20px;">{{ category.name }}</span>
+                    <div id="toons">
+                    {% for toon in category.toons %}
+                        <div id="toon" align="center">
+                            <span style="font-size: {{ toon.fontsize }}px;">{{ toon.index }}. {{ toon.name }}</span><br>
+                            <img src="{{ toon.img }}"></img><br>
+                            <span style="font-size: {{ toon.fontsize }}px;">{{ toon.score }}</span>
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+            <br>
+        {% empty %}
+            <p style="padding-bottom: 1px;"></p>
+            <h2 align="center">No entries found! Come back next month!</p>
+        {% endfor %}
+    </div>
+{% endblock %}

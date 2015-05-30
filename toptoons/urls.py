@@ -3,7 +3,7 @@ from django.conf.urls import patterns, include, url
 import views
 
 urlpatterns = patterns('',
-    # url(r'^$', views.home, name='home'),
+    url(r'^$', views.home, name='home'),
     url(r'^post/', views.post, name='post'),
 )
 

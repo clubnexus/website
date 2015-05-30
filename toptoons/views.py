@@ -1,5 +1,6 @@
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
+from django.templatetags.static import static
 from django.shortcuts import render
 
 from models import TopToonsEntry
@@ -125,14 +126,17 @@ class _CATEGORY:
     def __init__(self, name, toons):
         self.name = name
         self.toons = []
-        for dt in toons:
+        for i, dt in enumerate(toons):
             t = _TOON()
-            (t.name, t.hp), t.score = dt
+            t.index = i + 1
+            t.fontsize = 16
+            (t.name, img, t.hp), t.score = dt
+            t.img = static('img/toptoons/%s.gif' % img)
             self.toons.append(t)
             
 def _convertMonthToText(month):
-    year, month = divmod(current, 100)
-    return '%s/%s' % (str(month).zfill(2), year) # TO DO: str (jan, feb, etc)
+    year, month = divmod(month, 100)
+    return '%s/%s' % (str(month).zfill(2), year)
 
 def home(request):
     objects = TopToonsEntry.objects.order_by('-month')          
@@ -145,7 +149,9 @@ def home(request):
         i = _CAT_BEGIN
         while i <= _CAT_END:
             name = DESCRIPTIONS[i]
-            categories.append(_CATEGORY(name, data[str(i)]))
+            ranking = data.get(str(i), [])
+            if ranking:
+                categories.append(_CATEGORY(name, ranking))
             i *= 2
             
         m = _MONTH()
@@ -153,5 +159,5 @@ def home(request):
         m.text = _convertMonthToText(obj.month)
         monthList.append(m)
             
-    return render(request, 'toptoons/toptoons.html', {'error': error, 'categories': categories, 'monthList': monthList})
+    return render(request, 'toptoons/toptoons.html', {'monthList': monthList})
     
