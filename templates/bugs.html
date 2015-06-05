@@ -23,7 +23,8 @@
     <div id="posttable">
         {% for bug in bugs %}
             <div id="commentboxuser" style="padding: 2px;">
-                <span style="font-size: 14px;"><i>{{ bug.username }}</i> reported on <i>{{ bug.date }}</i></span><br>
+                <span style="font-size: 14px;"><i>{{ bug.username }}</i> reported on <i>{{ bug.date }}: <b>{{ bug.title }}</b></i></span><br>
+                <p></p>
                 <p>{{ bug.data }}</p>
                 <p>MARK AS:</p>
                 <p align="center">
