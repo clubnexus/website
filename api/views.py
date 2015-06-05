@@ -62,9 +62,9 @@ def __convertTime(value):
     return ' '.join(r[::-1])
     
 def __get_debug_invasion():
-    r = {"error": None}
+    r = {'error': None}
     for i in xrange(32):
-        r[`i`] = {
+        r[str(i)]= {
         'cogFullName': [os.urandom(4).encode('hex'), '', ''],
         'cogName': suitHeadTypes[i],
         'districtName': os.urandom(7).encode('hex'),
@@ -86,7 +86,7 @@ def __doRequest(url, args={}):
     url = "http://%s%s?%s" % (API_RELAY, url, ag)
     try:
         req = urllib2.Request(url)
-        return json.loads(urllib.urlopen(req, timeout=8).read())
+        return json.loads(urllib2.urlopen(req, timeout=8).read())
         
     except:
         return {'error': 'Unable to reach server.'}

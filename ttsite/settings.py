@@ -99,4 +99,4 @@ API_KEY = __environ.get('API_KEY', 'dev')
 __dfrl = GAMESERVERS[0] + ':19200' if GAMESERVERS else ''
 API_RELAY = __environ.get('API_RELAY', __dfrl)
 
-WANT_INVASION_DEBUG = __environ.get('WANT_INVASION_DEBUG', not bool(API_RELAY))
+WANT_INVASION_DEBUG = __environ.get('WANT_INVASION_DEBUG', False)
