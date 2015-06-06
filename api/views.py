@@ -113,6 +113,9 @@ def TT_api_invasions(request):
             inv.duration = __convertTime(d['duration'])
             inv.isMega = inv.duration == '1s'
             inv.remaining = __convertTime(abs(d['remaining']))
+            inv.cogWidth = 150
+            if inv.pic in ('ms', 'sd', 'tm', 'ac'):
+                inv.cogWidth = 100
             
             district = _District()
             district.name = d['districtName']

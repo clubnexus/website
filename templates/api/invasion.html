@@ -23,7 +23,7 @@
         </td></tr>
         <tr><td align="center">
                 <img src="{% static 'img/cogs/' %}{{ district.invasion.pic }}.png" alt="{{ district.invasion.cogName }}"
-                     style="width: 35%; height: 25%">
+                     style="width: {{ district.invasion.cogWidth }}px; height: 200px;">
             </td></td>
         </tr>
         <tr><td align="center">Duration: 
