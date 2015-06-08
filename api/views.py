@@ -107,8 +107,12 @@ def TT_api_invasions(request):
                 continue
                 
             inv = _Invasion()
-            inv.cogName = d['cogFullName'][0]
-            inv.pic = d['cogName']
+            if d['skel'] == True:
+                inv.cogName = 'Skelecog'
+                inv.pic = 'skel'
+            else:
+                inv.cogName = d['cogFullName'][0]
+                inv.pic = d['cogName']
             inv.numCogs = d['numCogs']
             inv.duration = __convertTime(d['duration'])
             inv.isMega = inv.duration == '1s'
