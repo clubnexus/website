@@ -1,3 +1,4 @@
+<meta http-equiv="refresh" content="20">
 {% extends "basehtml.html" %}
 
 {% load staticfiles %}
@@ -19,19 +20,24 @@
     </table>
     <table border="0" width="424" align="center">
         <tr><td align="center">
-            <span style="align: center; font-size: 24px;">Invading cog: <b>{{ district.invasion.cogName }}</b></span>
+            <span style="align: center; font-size: 24px;">
+Invading Cog: <b>{{ district.invasion.cogName }}</b> <br>
+Invasão de: <b>{{ district.invasion.cogName }}</b>
+
+
+</span>
         </td></tr>
         <tr><td align="center">
                 <img src="{% static 'img/cogs/' %}{{ district.invasion.pic }}.png" alt="{{ district.invasion.cogName }}"
                      style="width: {{ district.invasion.cogWidth }}px; height: 200px;">
             </td></td>
         </tr>
-        <tr><td align="center">Duration: 
+        <tr><td align="center">Duration/Duração Total: 
             {% if district.invasion.isMega %}
-                MEGA!</td></tr><tr><td align="center">Elapsed time: 
+                MEGA!</td></tr><tr><td align="center">Elapsed time/Tempo Decorrido: 
             {% else %}
                 {{ district.invasion.duration }}</td></tr>
-                <td align="center">Remaining time: 
+                <td align="center">Remaining time/Tempo Restante: 
             {% endif %}
             
             {{ district.invasion.remaining }}</td></tr>
