@@ -79,6 +79,7 @@ def __get_debug_invasion():
         'numCogs': int(ord(os.urandom(1)) * 99),
         'remaining': int(-ord(os.urandom(1)) ** 2.5),
         'skel': False,
+        'v2': False,
         'sellbot': False, #pode ser que precise ajuste dessas linhas
         'cachbot': False,
         'lawbot': False,
@@ -123,10 +124,6 @@ def TT_api_invasions(request):
                 inv.pic = 'skel'
 
             elif d['cogName'] == '':
-#       		 if d['cogType'] == 'b':
-#		  inv.cogName = 'Bossbot'
-#                  inv.pic = 'b'
-
                 inv.cogName = 'Special Invasion'
                 inv.pic = 'special'
 
