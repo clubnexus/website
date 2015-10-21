@@ -1,3 +1,5 @@
+#! python
+# -*- coding: utf-8 -*-
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
@@ -40,7 +42,12 @@ suitHeadTypes = ['f',
  'ms',
  'tf',
  'm',
- 'mh']
+ 'mh',
+ 's',
+ 'c',
+ 'l',
+ 'b',
+]
 
 def __convertTime(value):
     if not value:
@@ -72,6 +79,10 @@ def __get_debug_invasion():
         'numCogs': int(ord(os.urandom(1)) * 99),
         'remaining': int(-ord(os.urandom(1)) ** 2.5),
         'skel': False,
+        'sellbot': False, #pode ser que precise ajuste dessas linhas
+        'cachbot': False,
+        'lawbot': False,
+        'bossbot': False,
         }
     return r
 
@@ -110,6 +121,15 @@ def TT_api_invasions(request):
             if d['skel'] == True:
                 inv.cogName = 'Skelecog'
                 inv.pic = 'skel'
+
+            elif d['cogName'] == '':
+#       		 if d['cogType'] == 'b':
+#		  inv.cogName = 'Bossbot'
+#                  inv.pic = 'b'
+
+                inv.cogName = 'Special Invasion'
+                inv.pic = 'special'
+
             else:
                 inv.cogName = d['cogFullName'][0]
                 inv.pic = d['cogName']
@@ -127,7 +147,7 @@ def TT_api_invasions(request):
             districts.append(district)
             
     if not districts:
-        error = 'No invasion found!'
+        error = "No invasion found! \n \n Sem Invaões!" #mensagem quando não tem invasão
         
     return render(request, 'api/invasion.html', {'error': error, 'districts': districts})
 
