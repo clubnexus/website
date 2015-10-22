@@ -125,7 +125,7 @@ def TT_api_invasions(request):
 
             elif d['cogName'] == '':
                 inv.cogName = 'Special Invasion'
-                inv.pic = 'special'
+                inv.pic = 'spcl'
 
             else:
                 inv.cogName = d['cogFullName'][0]
