@@ -47,7 +47,7 @@ class LoginSuccess:
 loginError = lambda: JSONResponse({'status': LoginSuccess.IncorrectUserOrPassword, 'message': 'The username or password is incorrect.\nO nome de usuário ou senha está incorreto.'})
 genericError = lambda: JSONResponse({'status': LoginSuccess.ServerError, 'message': 'Something went wrong. Please try again.\nAlgo deu errado. Por favor, tente novamente.'})
 bannedError = lambda: JSONResponse({'status': LoginSuccess.AccountDisabled, 'message': 'Your account is banned. Please try to login from website for more info.\nA sua conta está bloqueada. Por favor, tente fazer o login no site para mais informações.'})
-serverClosedError = lambda: JSONResponse({'status': LoginSuccess.ServerClosed, 'message': 'Server closed for maintenance. \nServidor fechado para manuntenção.'})
+serverClosedError = lambda: JSONResponse({'status': LoginSuccess.ServerClosed, 'message': 'Server closed for maintenance.\nServidor fechado para manuntenção.'})
 updateRequiredError = lambda: JSONResponse({'status': LoginSuccess.UnknownError, 'message': 'A new version of the launcher is available. Please download and install the new version from the website.'})
 
 invalidCookie = lambda: JSONResponse({'success': False, 'error': 'invalid cookie'})
