@@ -19,13 +19,6 @@ import events
 
 import os
 
-EMAILDATA = '''Hello, <b>%(username)s!</b>
-
-<p>Thank you for registering in Toontown Next! Please, <a href="http://%(baseurl)s/verify/%(token)s">click here</a>
-to confirm your account.</p>
-<p>Yours,</p>
-<p>Club Nexus</p>'''
-
 FORGOTPASS = '''Hello, <b>%(username)s!</b>
 
 <p>You have request a password change in Toontown Next! Please, <a href="http://%(baseurl)s/resetpass/%(token)s">click here</a>
@@ -127,29 +120,21 @@ def TT_register(request):
             else:
                 user = form.save(commit=False)
                 user.set_password(user.password)
-                user.is_active = 0
+                user.is_active = 1
                 
                 # N.B. Do not use HTTPS here, let the server redirect if desired
                 baseurl = request.get_host()
-                token = os.urandom(32).encode('hex')
+                token = os.urandom(16).encode('hex')
                 
-                try:
-                    __get_email(email, 'Registration', EMAILDATA % locals()).send()
+                user.save()
+                userext = UserExt(user=user.id, email_token=token)
+                userext.save()
 
-                except:
-                    raise
-                    error_email = ['Unable to reach this email.']
+                events.add_event('REGISTERED', event_account=user.id, request=request,
+                                 event_desc_priv='emailtoken=%s' % token)              
 
-                else:
-                    user.save()
-                    userext = UserExt(user=user.id, email_token=token)
-                    userext.save()
+                return HttpResponseRedirect('/register/success')
 
-                    events.add_event('REGISTERED', event_account=user.id, request=request,
-                                     event_desc_priv='emailtoken=%s' % token)              
-
-                    return HttpResponseRedirect('/register/success')
-                
         else:
             for key, errors in form.errors.items():
                 if key == 'username':
@@ -249,38 +234,7 @@ def TT_register_success(request):
     context = request.session.pop('registersuccessctx', 'Your account has been registered.')
     extra = request.session.pop('registersuccessextra', '')
     return render(request, 'registration/success.html', {'context': context, 'extra': extra})
-    
-def TT_register_resend(request):
-    error = ''
-    
-    if request.method == 'POST':
-        email = request.POST['email']
-        if not email.strip() or not '@' in email:
-            error = 'Invalid email'
-            
-        elif not util.verify_captcha(request):
-            error = 'Please confirm that you are not a bot.'
-            
-        else:
-            try:
-                user = auth_models.User.objects.get(email__iexact=email)
-                userext = UserExt.objects.get(user=user.id, email_verified=False)
-            
-            except (auth_models.User.DoesNotExist, UserExt.DoesNotExist):
-                error = 'Email not found or associated user already confirmed'
-            
-            else:
-                username = user.username
-                token = userext.email_token
-                baseurl = request.get_host()
-            
-                __get_email(user.email, 'Registration', EMAILDATA % locals()).send()
-            
-                request.session['registersuccessctx'] = 'Registration email resent.'
-                return HttpResponseRedirect('/register/success')
 
-    return render(request, 'registration/resend.html', {'error': error})
-    
 def TT_forgotpass(request):
     error = ''
     
@@ -411,4 +365,3 @@ def TT_buglist(request):
     bugs = BugReport.objects.order_by('-date')
     bugs = filter(lambda bug: bug.status in (BUG_NEW, BUG_ACK, BUG_CONFIRMED), bugs)
     return render(request, 'bugs.html', {'bugs': bugs})
-    

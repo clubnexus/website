@@ -14,7 +14,7 @@ DEBUG = TEMPLATE_DEBUG = (SECRET_KEY == __default_key) or __environ.get('FORCE_D
 ALLOWED_HOSTS = __environ.get('HOSTS', '').split(';')
 
 if not DEBUG:        
-    ALLOWED_HOSTS.extend(['127.0.0.1', 'localhost', 'toontownnext.net', 'www.toontownnext.net'])
+    ALLOWED_HOSTS.extend(['127.0.0.1', 'localhost', 'toontownnext.net', 'www.toontownnext.net', 'local.toontownnext.net'])
 
 # Application definition
 INSTALLED_APPS = (
@@ -102,7 +102,7 @@ else:
     # Use production settings
     # N. B. Raises KeyError, on purpose, if EMAIL_PASSOWORD is not set
     EMAIL_USE_TLS = True
-    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_HOST = __environ.get('EMAIL_HOST', 'smtp.gmail.com')
     EMAIL_HOST_USER = __environ.get('EMAIL_USER', 'clubnexus1@gmail.com')
     EMAIL_HOST_PASSWORD = __environ['EMAIL_PASSWORD']
     EMAIL_PORT = 587
