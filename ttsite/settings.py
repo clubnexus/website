@@ -90,6 +90,25 @@ POST_PIC_UPLOAD_DIR = __environ.get('UPLOAD_PREFIX', '') + STATIC_URL.strip('/')
 CKEDITOR_UPLOAD_PATH = POST_PIC_UPLOAD_DIR
 CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
 
+# Email
+if DEBUG and __environ.get('FORCE_EMAIL_MODE', '') != 'PROD':
+    EMAIL_HOST = 'localhost'
+    EMAIL_PORT = 1025
+    EMAIL_USE_TLS = False
+    EMAIL_HOST_USER = ''
+    EMAIL_HOST_PASSWORD = ''
+
+else:
+    # Use production settings
+    # N. B. Raises KeyError, on purpose, if EMAIL_PASSOWORD is not set
+    EMAIL_USE_TLS = True
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_HOST_USER = __environ.get('EMAIL_USER', 'clubnexus1@gmail.com')
+    EMAIL_HOST_PASSWORD = __environ['EMAIL_PASSWORD']
+    EMAIL_PORT = 587
+    
+DEFAULT_FROM_EMAIL = SERVER_EMAIL = 'Toontown Next <clubnexus1@gmail.com>'
+
 # API
 __dfgs =  'localhost' if DEBUG else ''
 GAMESERVERS = __environ.get('GAMESERVERS', __dfgs).split(';')

@@ -19,12 +19,27 @@ import events
 
 import os
 
+EMAILDATA = '''Hello, <b>%(username)s!</b>
+
+<p>Thank you for registering in Toontown Next! Please, <a href="http://%(baseurl)s/verify/%(token)s">click here</a>
+to confirm your account.</p>
+<p>Yours,</p>
+<p>Club Nexus</p>'''
+
 FORGOTPASS = '''Hello, <b>%(username)s!</b>
-<p>You have request a password change in Toontown Next! Please, <a href="%(url)s">click here</a>
+
+<p>You have request a password change in Toontown Next! Please, <a href="http://%(baseurl)s/resetpass/%(token)s">click here</a>
 to change your password.</p>
 <p>If you didn't request the change, you can safely ignore this email.</p>
 <p>Yours,</p>
 <p>Club Nexus</p>'''
+
+def __get_email(to, subject, message):
+    connection = get_connection(use_tls=settings.EMAIL_USE_TLS, host=settings.EMAIL_HOST, port=settings.EMAIL_PORT,
+                                username=settings.EMAIL_HOST_USER, password=settings.EMAIL_HOST_PASSWORD)
+    e = EmailMessage(subject, message, settings.DEFAULT_FROM_EMAIL, [to], connection=connection)
+    e.content_subtype = 'html'
+    return e
 
 def TT_login(request, *args, **kwargs):
     if request.user.is_authenticated():
@@ -112,17 +127,28 @@ def TT_register(request):
             else:
                 user = form.save(commit=False)
                 user.set_password(user.password)
-                user.is_active = 1
+                user.is_active = 0
                 
-                token = os.urandom(16).encode('hex')
+                # N.B. Do not use HTTPS here, let the server redirect if desired
+                baseurl = request.get_host()
+                token = os.urandom(32).encode('hex')
                 
-                user.save()
-                userext = UserExt(user=user.id, email_token=token)
-                userext.save()
+                try:
+                    __get_email(email, 'Registration', EMAILDATA % locals()).send()
 
-                events.add_event('REGISTERED', event_account=user.id, request=request)              
+                except:
+                    raise
+                    error_email = ['Unable to reach this email.']
 
-                return HttpResponseRedirect('/register/success')
+                else:
+                    user.save()
+                    userext = UserExt(user=user.id, email_token=token)
+                    userext.save()
+
+                    events.add_event('REGISTERED', event_account=user.id, request=request,
+                                     event_desc_priv='emailtoken=%s' % token)              
+
+                    return HttpResponseRedirect('/register/success')
                 
         else:
             for key, errors in form.errors.items():
@@ -147,6 +173,20 @@ def TT_register(request):
                                                           'error_captcha': error_captcha,
                                                           'D_username': username,
                                                           'D_email': email})
+    
+def TT_verify(request, token):
+    userext = get_object_or_404(UserExt, email_token=token, email_verified=False)
+    user = get_object_or_404(User, pk=userext.user)
+    
+    user.is_active = 1
+    user.save()
+    
+    userext.email_verified = 1
+    userext.save()
+    
+    events.add_event('EMAIL_VERIFIED', event_account=user.id, request=request)
+    
+    return HttpResponseRedirect('/login')
     
 @events.TT_login_required
 def TT_account_main(request):
@@ -206,11 +246,41 @@ def TT_account_changepassword(request):
     return render(request, 'account/changepassword.html', {'error': error})
     
 def TT_register_success(request):
-    context = request.session.pop('registersuccessctx', 'Congratulations! Your account has been registered. You can now proceed to login.')
+    context = request.session.pop('registersuccessctx', 'Your account has been registered.')
     extra = request.session.pop('registersuccessextra', '')
-    wantLogin = request.session.pop('registersuccesswantlogin', 1)
-    return render(request, 'registration/success.html', {'context': context, 'extra': extra, 'want_login': wantLogin})
+    return render(request, 'registration/success.html', {'context': context, 'extra': extra})
+    
+def TT_register_resend(request):
+    error = ''
+    
+    if request.method == 'POST':
+        email = request.POST['email']
+        if not email.strip() or not '@' in email:
+            error = 'Invalid email'
+            
+        elif not util.verify_captcha(request):
+            error = 'Please confirm that you are not a bot.'
+            
+        else:
+            try:
+                user = auth_models.User.objects.get(email__iexact=email)
+                userext = UserExt.objects.get(user=user.id, email_verified=False)
+            
+            except (auth_models.User.DoesNotExist, UserExt.DoesNotExist):
+                error = 'Email not found or associated user already confirmed'
+            
+            else:
+                username = user.username
+                token = userext.email_token
+                baseurl = request.get_host()
+            
+                __get_email(user.email, 'Registration', EMAILDATA % locals()).send()
+            
+                request.session['registersuccessctx'] = 'Registration email resent.'
+                return HttpResponseRedirect('/register/success')
 
+    return render(request, 'registration/resend.html', {'error': error})
+    
 def TT_forgotpass(request):
     error = ''
     
@@ -226,24 +296,26 @@ def TT_forgotpass(request):
             try:
                 user = auth_models.User.objects.get(email__iexact=email, is_active=True)
                 userext = UserExt.objects.get(user=user.id)
-                if userext.is_token_valid():
-                    raise ValueError
             
-            except (auth_models.User.DoesNotExist, UserExt.DoesNotExist, ValueError):
-                error = 'Either this email was not found or the account is not activated or a password change has already been request lately. It may take up to 24 hours to reset link reach your email.'
+            except (auth_models.User.DoesNotExist, UserExt.DoesNotExist):
+                error = 'Email not found or account not activated'
             
             else:
                 username = user.username
-                userext.gen_reset_token()
-                
+                token = userext.gen_reset_token()
+                baseurl = request.get_host()
+            
+                __get_email(user.email, 'Password Reset', FORGOTPASS % locals()).send()
+
                 request.session['registersuccessctx'] = 'Password reset email sent.'
-                request.session['registersuccessextra'] = '<p><i>It may take up to 24 hours to reset link reach your email. If you don\'t get it until then, check your spam and if it\'s still not there request a new password change email using the previous form.</i></p>'
-                request.session['registersuccesswantlogin'] = 0
+                request.session['registersuccessextra'] = '<p><i>Make sure to use link provided in your email soon, as it will be invalidated within the next 36 hours.</i></p>'
                 return HttpResponseRedirect('/register/success')
 
-    return render(request, 'registration/forgotpass.html', {'error': error})
+    return render(request, 'registration/forgotpass.html', {'error': error}) 
     
 def TT_resetpass(request, token):
+    print token
+    
     if request.user.is_authenticated():
         return HttpResponseRedirect('/')
     
@@ -275,45 +347,7 @@ def TT_resetpass(request, token):
             return HttpResponseRedirect('/login')
 
     return render(request, 'registration/resetpass.html', {'error': error, 'token': token})
-    
-@events.TT_login_required
-def TT_pending(request):
-    if not request.user.is_superuser:
-        return HttpResponseRedirect('/')
-        
-    if request.method == 'POST':
-        token = request.POST.get('token', 'notset')
-        try:
-            userext = UserExt.objects.get(email_reset_token=token)
-            userext.email_reset_token = token[:32] + '1'
-            userext.save()
-            
-        except Exception as e:
-            print token, e
-            raise
-            
-    pending = UserExt.objects.order_by('-email_reset_token')
-    pd = set()
-    for p in pending:
-        if p.email_reset_token and p.email_reset_token[-1] == '0':
-            user = p.get_user()
-            if not user:
-                continue
-             
-            username = user.username
-            url = 'http://%s/resetpass/%s' % (request.get_host(), p.email_reset_token[:32])
-            msg = FORGOTPASS % locals()
-            
-            res =  '<td><a href="mailto:%s' % user.email
-            res += '?subject=Password%20reset">'
-            res += '%s</a></td>' % username
-            res += '<td>%s</td>' % user.email
-            res += '<td style="text-align: left;">%s</td>' % msg
-            res += '<td><a href="javascript:doreview(\'%s\');">DONE</a></td>' % p.email_reset_token
-            pd.add(res)
-            
-    return render(request, 'pending.html', {'pd': pd})
-    
+
 def errorpage(request):
     return render(request, 'error.html', {})
     

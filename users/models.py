@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.signing import dumps, loads
 from django.db import models
-import string, os, struct, time, datetime
+import string, os
 
 ALLOWED_CHARS = string.ascii_lowercase + string.ascii_uppercase + ''.join([`x` for x in xrange(10)]) + '.-_'
 
@@ -97,7 +97,7 @@ class UserExt(models.Model):
 
     ban_history = models.CharField(max_length=20 * 1024)
     
-    email_reset_token = models.CharField(max_length=33)
+    email_reset_token = models.CharField(max_length=32)
     
     def get_user(self):
         try:
@@ -140,34 +140,24 @@ class UserExt(models.Model):
         if not user:
             return ''
             
-        data = struct.pack('<I', int(time.time()))
-        data += os.urandom(12)
-        self.email_reset_token = data.encode('hex') + '0'
+        self.email_reset_token = os.urandom(16).encode('hex') 
         self.save()
         
-        return self.email_reset_token[:32]
-                      
-    def is_token_valid(self):
-        if len(self.email_reset_token) < 4:
-            if self.email_reset_token:
-                self.email_reset_token = ''
-                self.save()
-            return 0
-            
-        max_age = 60 * 60 * 24 * 2 # 48 hours
-        
-        valid = time.time() < struct.unpack('<I', self.email_reset_token[:4])[0] + max_age
-        if not valid:
-            self.email_reset_token = ''
-            self.save()
-        
-        return valid
-
+        return dumps({'token': self.email_reset_token,
+                      'username': self.get_user().username}, compress=True).encode('hex') 
+    
     @classmethod
     def check_reset_token(cls, token):
         try:
-            userext = cls.objects.get(email_reset_token=token + '1')
-            if not userext.is_token_valid():
+            # Token is valid for only 36 hours
+            token = loads(token.decode('hex'), max_age=60 * 60 * 24 * 1.5)
+            
+        except:
+            return (None, None)
+            
+        try:
+            userext = cls.objects.get(email_reset_token=token['token'])
+            if userext.get_user().username != token['username']:
                 return (None, None)
             
         except:

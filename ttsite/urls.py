@@ -18,11 +18,11 @@ urlpatterns = patterns('',
     url(r'^logout/$', users_views.TT_logout, name='TT Logout Page'),
     url(r'^register/$', users_views.TT_register, name='TT Register Page'),
     url(r'^register/success/$', users_views.TT_register_success, name='TT Register Success Page'),
+    url(r'^register/resend/$', users_views.TT_register_resend, name='TT Register Resend Page'),
+    url(r'^verify/(?P<token>\w+)', users_views.TT_verify, name='TT Verify Page'),
     url(r'^forgotpass/$', users_views.TT_forgotpass, name='TT Forgot Password Page'),
     url(r'^resetpass/(?P<token>\w+)', users_views.TT_resetpass, name='TT Forgot Password Page'),
-    url(r'^pending/$', users_views.TT_pending, name='TT Pending Emails'),
     url(r'^buglist/$', users_views.TT_buglist, name='TT Buglist'),
-    
     url(r'^account/', include('users.urls', namespace='account')),
     url(r'^toptoons/', include('toptoons.urls', namespace='toptoons')),
 )
