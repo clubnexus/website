@@ -107,7 +107,7 @@ else:
     EMAIL_HOST_PASSWORD = __environ['EMAIL_PASSWORD']
     EMAIL_PORT = 587
     
-DEFAULT_FROM_EMAIL = SERVER_EMAIL = 'Toontown Next <clubnexus1@gmail.com>'
+DEFAULT_FROM_EMAIL = SERVER_EMAIL = 'Toontown Next <toontownnext@crinform.com.br>'
 
 # API
 __dfgs =  'localhost' if DEBUG else ''
