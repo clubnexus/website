@@ -14,7 +14,7 @@ DEBUG = TEMPLATE_DEBUG = (SECRET_KEY == __default_key) or __environ.get('FORCE_D
 ALLOWED_HOSTS = __environ.get('HOSTS', '').split(';')
 
 if not DEBUG:        
-    ALLOWED_HOSTS.extend(['127.0.0.1', 'localhost', 'toontownnext.net', 'www.toontownnext.net', 'local.toontownnext.net'])
+    ALLOWED_HOSTS.extend(['127.0.0.1', 'localhost', 'toontownnext.crinform.com.br', 'www.toontownnext.crinform.com.br', 'test.toontownnext.crinform.com.br'])
 
 # Application definition
 INSTALLED_APPS = (
@@ -65,7 +65,7 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = USE_L10N = USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
@@ -83,7 +83,7 @@ TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 LOGIN_REDIRECT_URL = '/'
 CAPTCHA_ALWAYS_CORRECT = DEBUG or __environ.get('CAPTCHA_ALWAYS_CORRECT', 0)
 SESSION_COOKIE_NAME = '__sessionid'
-SESSION_COOKIE_DOMAIN = '.toontownnext.net' if not DEBUG else ''
+SESSION_COOKIE_DOMAIN = '.toontownnext.crinform.com.br' if not DEBUG else ''
 
 # News
 POST_PIC_UPLOAD_DIR = __environ.get('UPLOAD_PREFIX', '') + STATIC_URL.strip('/') + '/img/posts'
